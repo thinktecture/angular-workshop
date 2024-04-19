@@ -1,25 +1,27 @@
 # angular-workshop
 A beginner Angular workshop 
 
-## Start 
-
-```
-ng new todo
-cd todo
-ng serve --open
-```
-
 ## Labs
+### 0. Creating the app
+```sh
+ng new todo
+
+# on the options given, choose: 
+# SCSS, 
+# Server-Side Rendering (SSR): No
+
+cd todo
+
+ng serve --open 
+# your app should open on http://localhost:4200/
+```
 
 ### 1. Bindings
-
-Start: https://stackblitz.com/edit/github-uelwhb
 
 <details><summary>Show Labs</summary>
 	
 #### Interpolation
-In your freshly created project, open the file `src/app/app.component.html` and try the following bindings (one after another). You can completely remove the existing contents of this file.
-
+In your freshly created project, open the file `src/app/app.component.html`. You can completely remove the existing contents of this file. Now try the following bindings (one after another). 
 1. `{{ 'hallo' }}`
 2. `{{ 3 }}`
 3. `{{ 17 + 4 }}`
@@ -46,11 +48,11 @@ Then, `Hello` should show up in the preview pane.
 
 #### Property Binding
 
-1. Declare a new field called `color` on your component instance and initialize it with a CSS color value (e.g., `hotpink`)
-2. Create a new `div` element in the AppComponent’s HTML template (Hint: `<div></div>`)
+1. Declare a new field called `color` on your component instance and initialize it with a CSS color value (e.g., `hotpink`))
+2. Create a new `div` element in the AppComponent’s HTML template and add some text(Hint: `<div>My pink container</div>`
 3. Bind the value of the field to the background color of the `div` element (Hint—add the following attribute assignment to the `div` node: `[style.backgroundColor]="color"`)
 
-The square brackets are not a typo! They might look odd, but it woll work.
+The square brackets are not a typo! They might look odd, but it will work.
 
 #### Event Binding
 
@@ -58,46 +60,52 @@ The square brackets are not a typo! They might look odd, but it woll work.
 2. Create a new `button` element in the AppComponent’s HTML template (Hint: `<button>Click me.</button>`)
 3. Bind the click event of the button to the `onClick` method (Hint—add the following attribute assignment to the `button` node: `(click)="onClick()"`)
 4. Implement a new method `onMouseMove` on the component instance that logs to the console (Hint: `console.log('Hello!')`)
-5. Bind the `mousemove` event of the button to `onMouseMove`
+5. Bind the `mousemove` event of the button to `onMouseMove`. 
 
-Again, the brackets are not a typo. It will work out just fine.
+Again, the brackets are not a typo. It will work just fine.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-https://stackblitz.com/edit/github-uelwhb-uhxbn5
+
+
+#### app.component.ts
 
 ```js
-export class AppComponent  {
-  public value = "Hello";
-  public color = "hotpink";
+import { Component } from '@angular/core';
 
-  public onClick(): void {
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+})
+export class AppComponent {
+  title = 'todo';
+  public value = 'Hello';
+  color = 'hotpink';
+
+  public onClick() {
     alert('Hello!');
   }
 
-  public onMouseMove(): void {
+  public onMouseMove() {
     console.log('Hello!');
   }
 }
 ```
-
+#### app.component.html
 ```html
-{{ 'hallo' }} <br/>
-{{ 3 }} <br/>
-{{ 17 + 4 }} <br/>
-
-<hr/>
+{{ "hallo" }}
+{{ 3 }}
+{{ 17 + 4 }}
 
 <p>{{ value }}</p>
 
-<hr/>
+<div [style.backgroundColor]="color">My pink container</div>
 
-<div [style.backgroundColor]="color">Test</div>
-
-
-<button (click)="onClick()" (mousemove)="onMouseMove()">Click me.</button>
+<button (mousemove)="onMouseMove()" (click)="onClick()">Click me.</button>
 ```
 
 </details>
@@ -118,9 +126,6 @@ MouseEvent documentation: https://developer.mozilla.org/de/docs/Web/API/MouseEve
 </details>
 
 <details><summary>Show Solution</summary>
-
-	
-https://stackblitz.com/edit/github-uelwhb-ery5wz
 
 ```js
 export class AppComponent  {
