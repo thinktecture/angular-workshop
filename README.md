@@ -538,52 +538,60 @@ ng generate service todo
 In your TodoService, add the following methods:
 
 ```ts
-create(todo: Todo): Todo {}
-get(todoId: number): Todo {}
-getAll(): Todo[] {}
-update(todo: Todo): void {}
-delete(todoId: number): void {}
+  create(todo: Todo) {}
+  get(todoId: number) {}
+  getAll(): Todo[] {}
+  update(todo: Todo): void {}
+  delete(todoId: number): void {}
 ```
 
-Add a very basic, synchronous implementation for getAll. Inject your TodoService into the AppComponent (don’t forget to update the imports on top). Log the list of todos to the console.
+Add the following field: 
+```ts
+public todos: Todo[] = [{ done: false, name: 'Learn Angular', id: 1 }];
+```
+
+Add a very basic, synchronous implementation for getAll returning the todos. Inject your TodoService into the AppComponent (don’t forget to update the imports on top). Log the list of todos to the console in the AppComponent.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
 
 ```js
-import { ElementRef } from '@angular/core';
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+import { TodoService } from './todo.service';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+  providers: [TodoService]
 })
-export class AppComponent  {
-  public todoObject = { name: "Wash clothes", done: false, id: 3 }
-
-  constructor(private readonly elementRef: ElementRef,
-  private readonly todoService: TodoService){
-    console.log("elementRef from constructor", elementRef);
-
-    console.log(todoService.getAll());
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
+    console.log('service todos', todoService.getAll());
   }
 
-  catchDoneEvent(todo: any) {
-    console.log(todo);
-  }
 
-  logElementRef(){
-    console.log("elementRef from console as property", this.elementRef);
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 }
+
 ```
 
-todo.ts
-
 ```js
+// todo.ts
 export interface Todo {
   name: string;
   done: boolean;
@@ -591,9 +599,9 @@ export interface Todo {
 }
 ```
 
-todo.service.ts
 
 ```js
+// todo.service.ts
 @Injectable()
 export class TodoService {
 
