@@ -415,29 +415,32 @@ export class AppComponent {
 
 Create a directive:
 
-```
+```sh
 ng generate directive color
 ```
 
-The directive takes `color` as an input binding. The directive should set the color of the host element (using a `@HostBinding`).
+The directive takes `color` as an `@Input()` binding. The directive should set the color of the host element (using a `@HostBinding()`).
 
 #### Create a click directive
 
 Create another directive (named `click`) that adds a click handler to the elements where it’s placed on. Whenever the item is clicked, log a message to the console.
 
+Don't forget to import `ColorDirective` and `ClickDirective` to the component that uses them.
+
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
 
 ```js
+// todo.component.ts
 import { Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.css'],
+  imports: [JsonPipe, ColorDirective, ClickDirective],
   standalone: true
 })
 export class TodoComponent implements OnInit {
@@ -448,11 +451,6 @@ export class TodoComponent implements OnInit {
 
   colorToBind = "blue";
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
   markTodoAsDone(){
     this.todo.done = true;
     this.done.emit(this.todo);
@@ -460,39 +458,35 @@ export class TodoComponent implements OnInit {
 }
 ```
 
-todo.component.html
 
 ```html
-<p appClick appColor color="green">
-  inside todo-component: <br/>
-  {{todo | json}}
-</p>
-<p>
-  <span appColor [color]="colorToBind">test to apply directive on</span>
-</p>
+<!-- todo.component.html -->
+<p appClick appColor color="green">Todo: {{todo | json }}</p>
 
-<button (click)="markTodoAsDone()">mark as done</button>
+<button (click)="markAsDone()">Mark as done</button>
+<p appColor [color]="colorToBind">Color binding test</p>
+
 ```
 
-color.directive.ts
-
 ```js
+// color.directive.ts
 import { Directive, Input, HostBinding } from '@angular/core';
 
 @Directive({
   selector: '[appColor]',
-  standalone: true
+  standalone: true,
 })
 export class ColorDirective {
-
   @HostBinding('style.color')
-  @Input() color: string;
+  @Input()
+  color: string = '';
 }
+
 ```
 
-click.directive.ts
 
 ```js
+// click.directive.ts
 import { Directive, Input, HostListener } from '@angular/core';
 
 @Directive({

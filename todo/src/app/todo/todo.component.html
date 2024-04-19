@@ -1,3 +1,4 @@
-<p>Todo: {{todo | json }}</p>
+<p appClick appColor color="green">Todo: {{todo | json }}</p>
 
 <button (click)="markAsDone()">Mark as done</button>
+<p appColor [color]="colorToBind">Color binding test</p>
