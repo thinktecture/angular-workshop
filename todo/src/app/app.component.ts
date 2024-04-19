@@ -7,15 +7,14 @@ import { Component } from '@angular/core';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'todo';
   public value = 'Hello';
-  color = 'hotpink';
+  public color = 'hotpink';
 
-  public onClick() {
-    alert('Hello!');
+  public onClick(event: MouseEvent) {
+    console.log(event.clientX);
   }
 
-  public onMouseMove() {
-    console.log('Hello!');
+  public onMouseMove(event: MouseEvent) {
+    console.log(event.clientX);
   }
 }

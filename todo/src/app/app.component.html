@@ -6,4 +6,4 @@
 
 <div [style.backgroundColor]="color">My pink container</div>
 
-<button (mousemove)="onMouseMove()" (click)="onClick()">Click me.</button>
+<button (mousemove)="onMouseMove($event)" (click)="onClick($event)">Click me.</button>
