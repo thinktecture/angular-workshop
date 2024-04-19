@@ -1,10 +1,1 @@
-<p>{{ value | uppercase}}</p>
-
-<p>{{ number | percent}}</p>
-<p>{{ number | currency}}</p>
-<p>{{ number | number}}</p>
-
-<p>{{ value | yell}}</p>
-<p>{{ value | yell: '???'}}</p>
-
-<app-todo />
+<app-todo [todo]="myTodo" (done)="onDoneClicked($event)"/>

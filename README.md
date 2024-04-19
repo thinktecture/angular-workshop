@@ -324,81 +324,83 @@ export class AppComponent {
 	
 #### Input
 
-1. Extend your `TodoComponent` with an `@Input` field called `todo`.
+1. Extend your `TodoComponent` with an `@Input()` field called `todo`.
 2. Add a new `myTodo` field to the AppComponent and assign a todo object to it: `{ name: "Wash clothes", done: false, id: 3 }`
 3. Pass the `myTodo` object to the `todo` component from the AppComponent’s template by using an input binding.
-4. In the `TodoComponent`’s template, bind the value of the `todo` field to the UI using the `JSON` pipe.
+4. In the `TodoComponent`’s template, bind the value of the `todo` field to the UI using the interpolation and the `JSON` pipe.
 
 #### Output
 
-1. Extend your `TodoComponent` with an `@Output` field called `done`.
-2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button. When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
+1. Extend your `TodoComponent` with an `@Output()` field called `done`.
+2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button. 
+When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
 3. In the `AppComponent`’s template, bind to the `done` event using an event binding and log the finalized item to the console.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
-
 ```js
-import { Input, Output, EventEmitter, OnInit } from '@angular/core';
+// todo.component.ts
+
+import { JsonPipe } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-todo',
+  standalone: true,
+  imports: [JsonPipe],
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
-  standalone: true
+  styleUrl: './todo.component.scss',
 })
-export class TodoComponent implements OnInit {
-
+export class TodoComponent {
   @Input() todo: any;
+  @Output() done = new EventEmitter();
 
-  @Output() done = new EventEmitter<any>();
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(){
+  markAsDone() {
     this.todo.done = true;
     this.done.emit(this.todo);
   }
-
 }
-```
 
-todo.component.html
+```
 
 ```html
-<p>
-inside todo-component: <br/>
-{{todo | json}}
-</p>
+<!-- todo.component.html -->
 
-<button (click)="markTodoAsDone()">mark as done</button>
+<p>Todo: {{todo | json }}</p>
+
+<button (click)="markAsDone()">Mark as done</button>
 ```
 
-app.component.html
 
 ```html
-<app-todo [todo]="todoObject" (done)="catchDoneEvent($event)"></app-todo>
+<!-- app.component.html -->
+
+<app-todo [todo]="myTodo" (done)="onDoneClicked($event)"/>
 ```
 
-app.component.ts
+
 
 ```js
-@Component({
-  selector: 'my-app',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
-})
-export class AppComponent  {
-  public todoObject = { name: "Wash clothes", done: false, id: 3 }
+// app.component.ts
 
-  catchDoneEvent(todo: any) {
-    console.log(todo)
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+})
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 }
 ```
