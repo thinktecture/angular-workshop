@@ -274,42 +274,45 @@ If you like, you can duplicate this HTML element to see the idea of componentiza
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
+
 
 ```js
-@Component({
-    selector: 'app-todo',
-    templateUrl: './todo.component.html',
-    styleUrls: ['./todo.component.css'],
-    standalone: true,
-})
-export class TodoComponent implements OnInit {
-    constructor() {}
+// todo.component.ts
+import { Component } from '@angular/core';
 
-    ngOnInit() {}
+@Component({
+  selector: 'app-todo',
+  standalone: true,
+  imports: [],
+  templateUrl: './todo.component.html',
+  styleUrl: './todo.component.scss',
+})
+export class TodoComponent {
+  
 }
 ```
-
-
 
 ```html
 <!-- app.component.html -->
 <app-todo />
 ```
 
-app.component.ts
-
 ```js
+// app.component.ts
+...
+import { TodoComponent } from './todo/todo.component';
+
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
-    imports: [RouterOutlet, CommonModule, TodoComponent]
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, YellPipe, TodoComponent],
 })
 export class AppComponent {
-  title = 'todo';
+...
 }
+
 ```
 
 </details>
