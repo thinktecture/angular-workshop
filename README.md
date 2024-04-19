@@ -190,42 +190,60 @@ Implement the yell pipe as follows:
 <details><summary>Show Solution</summary>
 
 ```js
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { YellPipe } from './yell.pipe';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, YellPipe],
 })
-export class AppComponent  {
-  public value = "Hello";
+export class AppComponent {
+  public value = 'Hello';
+  public color = 'hotpink';
   public number = 3.14159;
+  public onClick(event: MouseEvent) {
+    console.log(event.clientX);
+  }
+
+  public onMouseMove(event: MouseEvent) {
+    console.log(event.clientX);
+  }
 }
 ```
 
 ```js
+// yell.pipe.ts
+import { Pipe, PipeTransform } from '@angular/core';
+
 @Pipe({
-    name: 'yell',
-    standalone: true
+  name: 'yell',
+  standalone: true,
 })
 export class YellPipe implements PipeTransform {
-    transform(value: string, args: string): string {
-        const suffix = args || '!!!';
-        return `${value}${suffix}`;
-    }
+  transform(value: string, args?: string) {
+    const suffix = args || '!!!';
+    return value + suffix;
+  }
 }
+
 ```
 
+
 ```html
-{{ value | uppercase }}	<br/>
+<!-- app.component.ts -->
+<p>{{ value | uppercase}}</p>
 
-{{ number | percent }}	 <br/>
-{{ number | currency }}	<br/>
-{{ number | number:'0.5' }}	<br/>
+<p>{{ number | percent}}</p>
+<p>{{ number | currency}}</p>
+<p>{{ number | number}}</p>
 
-
-{{ value | yell }}<br/>
-{{ value | yell:'???' }}
+<p>{{ value | yell}}</p>
+<p>{{ value | yell: '???'}}</p>
 ```
 
 </details>
@@ -272,9 +290,10 @@ export class TodoComponent implements OnInit {
 }
 ```
 
-app.component.html
+
 
 ```html
+<!-- app.component.html -->
 <app-todo />
 ```
 

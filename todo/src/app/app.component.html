@@ -1,9 +1,8 @@
-{{ "hallo" }}
-{{ 3 }}
-{{ 17 + 4 }}
+<p>{{ value | uppercase}}</p>
 
-<p>{{ value }}</p>
+<p>{{ number | percent}}</p>
+<p>{{ number | currency}}</p>
+<p>{{ number | number}}</p>
 
-<div [style.backgroundColor]="color">My pink container</div>
-
-<button (mousemove)="onMouseMove($event)" (click)="onClick($event)">Click me.</button>
+<p>{{ value | yell}}</p>
+<p>{{ value | yell: '???'}}</p>
