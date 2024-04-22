@@ -1,11 +1,15 @@
-<app-todo [todo]="myTodo" (done)="onDoneClicked($event)"/>
 <button (click)="toggle()">Toggle</button>
-<div *ngIf="show">
-  I’m visible!
-</div>
+<div *ngIf="show">I'm visible!</div>
 
 <ul>
-    <li *ngFor="let todo of todos">{{todo.name}}, {{todo.done}}</li>
+  <li *ngFor="let todo of todos$ | async as todos">
+    {{ todo.name }}, {{ todo.done }}
+  </li>
 </ul>
 
-<app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>
+<div *ngIf="todos$ | async as todos">You have {{ todos.length }} todos!</div>
+<app-todo
+  *ngFor="let todo of todos$ | async"
+  [todo]="todo"
+  (done)="catchDoneEvent($event)"
+/>

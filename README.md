@@ -729,7 +729,7 @@ export class AppComponent  {
  <ul>	
   <li *ngFor="let todo of todos">{{todo.name}}</li>	
 </ul>	
- <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>	
+ <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)" />
 ```
 ```js
 
@@ -949,7 +949,7 @@ export class AppComponent  {
 	
 #### Use Async Pipe
 
-Use the `async` pipe instead of manually subscribing.
+Use the `async` pipe instead of manually subscribing. Use the `ngOnInit()` lifecycle to update the `todos$` field.
 
 **Instead of:**
 ```ts
@@ -973,72 +973,77 @@ this.todos$ = todoService.getAll();
 
 **Instead of:**
 ```ts
-<app-todo *ngFor="let todo of todos" [todo]="todo">
-</app-todo>
+<app-todo *ngFor="let todo of todos" [todo]="todo" />
 ```
 
 **Use:**
 ```ts
-<app-todo *ngFor="let todo of todos$ | async" [todo]="todo">
-</app-todo>
+<app-todo *ngFor="let todo of todos$ | async" [todo]="todo" />
 ```
 </details>
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
-
 ```js
-import { ElementRef } from '@angular/core';
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+import { TodoService } from './todo.service';
+import { Todo } from './todo';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ],
-  standalone: true
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+  providers: [TodoService],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  public show = false;
+  protected readonly todos$ = this.todoService.getAll();
 
-  private show = true;
-  todos$: Observable<Todo[]>;
-
-  constructor(private readonly elementRef: ElementRef,
-  private readonly todoService: TodoService){
-    console.log("elementRef from constructor", elementRef);
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
   }
 
-  ngOnInit() {
-    this.todos$ = this.todoService.getAll();
-  }
-
-  catchDoneEvent(todo: any) {
-    console.log(todo)
-  }
-
-  logElementRef(){
-    console.log("elementRef from console as property", this.elementRef);
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 
   toggle() {
     this.show = !this.show;
   }
+
+  catchDoneEvent(todo: Todo) {
+    console.log(todo);
+  }
 }
 ```
 
-app.component.html
 
 ```html
-<div *ngIf="todos$ | async as todos">
-	You have {{ todos.length }} todos!
-</div>
+<!-- app.component.html -->
+<button (click)="toggle()">Toggle</button>
+<div *ngIf="show">I'm visible!</div>
 
 <ul>
-	<li *ngFor="let todo of todos$ | async">
-		{{ todo.name }}
-	</li>
+  <li *ngFor="let todo of todos$ | async as todos">
+    {{ todo.name }}, {{ todo.done }}
+  </li>
 </ul>
 
-<app-todo *ngFor="let todo of todos$ | async" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>
+<div *ngIf="todos$ | async as todos">You have {{ todos.length }} todos!</div>
+<app-todo
+  *ngFor="let todo of todos$ | async"
+  [todo]="todo"
+  (done)="catchDoneEvent($event)"
+/>
 ```
 
 </details>
