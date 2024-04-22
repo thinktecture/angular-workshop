@@ -19,8 +19,8 @@ export class TodoService {
     return this.http.post<Todo>(this.url, todo);
   }
 
-  get(todoId: number) {
-    this.http.get(`${this.url}/${todoId}`);
+  get(todoId: string): Observable<Todo> {
+    return this.http.get<Todo>(`${this.url}/${todoId}`);
   }
 
   getAll(): Observable<Todo[]> {
