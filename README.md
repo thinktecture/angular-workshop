@@ -826,7 +826,7 @@ export class TodoComponent {
 
 </details>
 
-### 9. Observables
+### 9. Observables / Http
 
 <details><summary>Show Labs</summary>
 	
@@ -1299,6 +1299,92 @@ export class TodoEditComponent implements OnInit {
 ```
 
 </details>
+
+
+
+### 13. Reactive Forms
+
+<details><summary>Show Labs</summary>
+
+#### Add a form
+In the class `TodoCreateComponent`, inject the `NonNullableFormBuilder` and the `TodoService`. Then, create a new form group with a form control for setting the `name` and the `done` state of the newly created todo:
+
+```ts
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly todoService = inject(TodoService);
+  protected readonly formGroup = this.fb.group({
+    // formControlName: ['default value']
+  });
+``` 
+
+Then, update the template to contain the following form. It should have to fields: A text field for editing the name and a checkbox for setting the done state. Implement `onSubmit()` and create the new todo item on the server using the TodoService.
+
+```html	
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">
+	<!-- … -->	
+	<input type="text" formControlName="name">
+	<button>Submit!</button>	
+</form>	
+```
+
+#### Validation	
+ Now, add a required and minlength (5 characters) validation to the name field:
+
+```ts
+  name: ['', [Validators.required, Validators.minlength(5)]]
+```
+
+Update the submit button to be disabled when the form is invalid:
+
+```html	
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">	
+	<!-- … -->	
+	<button [disabled]="formGroup.invalid">Submit!</button>	
+</form>	
+```
+
+</details>
+
+<details><summary>Show Solution</summary>
+
+
+
+```html
+<!-- todo-create.component.html -->
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <input type="checkbox" formControlName="done">
+  <input type="text" formControlName="name">
+  <button [disabled]="formGroup.invalid">Submit!</button>
+</form>
+```
+
+
+```ts
+// todo-create.component.ts
+import { Component, inject } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TodoService } from '../todo.service';
+
+@Component({
+  selector: 'app-todo-create',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './todo-create.component.html',
+  styleUrls: ['./todo-create.component.css'],
+})
+export class TodoCreateComponent {
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly todoService = inject(TodoService);
+  protected readonly formGroup = this.fb.group({
+    done: [false],
+    name: ['', [Validators.required, Validators.minLength(5)]],
+  });
+
+  onSubmit() {
+    this.todoService.create(this.formGroup.getRawValue()).subscribe();
+  }
+}
+```
 
 ## Acknowledgements
 
