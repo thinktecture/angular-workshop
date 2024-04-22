@@ -451,7 +451,7 @@ export class TodoComponent implements OnInit {
 
   colorToBind = "blue";
 
-  markTodoAsDone(){
+  markAsDone(){
     this.todo.done = true;
     this.done.emit(this.todo);
   }
@@ -547,7 +547,12 @@ In your TodoService, add the following methods:
 
 Add the following field: 
 ```ts
-public todos: Todo[] = [{ done: false, name: 'Learn Angular', id: 1 }];
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
 ```
 
 Add a very basic, synchronous implementation for getAll returning the todos. Inject your TodoService into the AppComponent (don’t forget to update the imports on top). Log the list of todos to the console in the AppComponent.
@@ -605,7 +610,12 @@ export interface Todo {
 @Injectable()
 export class TodoService {
 
-  private todos: Todo[] = [{name: 'Learn Angular', done: true, id: 1}];
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
 
   constructor() { }
 
@@ -641,26 +651,30 @@ In your AppComponent’s template, add the following snippet:
 </div>
 ```
 
-On the component class, introduce a new `show` field and toggle it via a new `toggle()` method (Hint: `this.show = !this.show;`).
+On the component class, introduce a new boolean `show` field and toggle it via a new `toggle()` method (Hint: `this.show = !this.show;`). Your toggle button should work now.
 
 #### *ngFor
 
 In the AppComponent, introduce a new field `todos` and assign the return value of todoService.getAll() to it.
-Bind this field to the view using the `*ngFor` structural directive and an unordered list (`ul`) with one list item (`li`) for each todo:
+Bind this field to the view using the `*ngFor` structural directive and an unordered list (`ul`) with one list item (`li`) for each todo. You can display t he todo name via interpolation.
 
 ```html
+<!-- app.component.html -->
 <ul>
-  <li *ngFor="let todo of todos"></li>
+  <li *ngFor="let todo of todos">{{todo.name}}{{todo.done}}</li>
 </ul>
 ```
+Now you should be able to your todo list in the browser.
 
 Next, iterate over your TodoComponent (app-todo) instead and pass the todo via the todo property binding. Adjust the template of TodoComponent to include:
 - a checkbox (input) to show the “done” state
+- you can bind the markAsDone() method to the (change) Event in the checkbox 
 - a label to show the “name” text
 
 ```html
+<!-- todo.component.html -->
 <label>
-	<input type="checkbox" [checked]="todo.done">
+	<input type="checkbox" [checked]="todo.done" (change)="markAsDone($event)">
 	{{ todo.name }}
 </label>
 ```
@@ -669,9 +683,8 @@ Next, iterate over your TodoComponent (app-todo) instead and pass the todo via t
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
-
 ```js
+// app.component.ts
 @Component({
   selector: 'my-app',
   templateUrl: './app.component.html',
@@ -690,10 +703,6 @@ export class AppComponent  {
     this.todos = todoService.getAll();
   }
 
-  catchDoneEvent(todo: any) {
-    console.log(todo)
-  }
-
   logElementRef(){
     console.log("elementRef from console as property", this.elementRef);
   }
@@ -701,12 +710,18 @@ export class AppComponent  {
   toggle() {
     this.show = !this.show;
   }
+
+  catchDoneEvent(todo: any) {
+    console.log(todo)
+  }
+
 }
 ```
 
-app.component.html
+
 
 ```html
+<!-- app.component.html -->
 <button (click)="toggle()">Toggle</button>	
 <div *ngIf="show">	
 	I am visible!	
@@ -716,70 +731,97 @@ app.component.html
 </ul>	
  <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>	
 ```
+```js
 
-todo.service.ts
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+
+  public show: boolean = false;
+  todos: Todo[] = [];
+
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
+    console.log('service todos', todoService.getAll());
+    this.todos = todoService.getAll();
+  }
+
+  onDoneClicked($event: any) {
+    console.log($event);
+  }
+
+  toggle() {
+    this.show = !this.show;
+  }
+
+  catchDoneEvent(todo: Todo) {
+    console.log(todo);
+  }
+}
+```
 
 ```js
 @Injectable()
+// todo.service.ts
+@Injectable({ providedIn: 'root' })
 export class TodoService {
+  constructor() {}
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
 
-  private todos: Todo[] = [{name: 'Learn Angular', done: true, id: 1}];
+  create(todo: Todo) {}
 
-  constructor() { 
-  }
+  get(todoId: number) {}
 
-  create(todo: Todo) {
-
-  }
-
-  get(todoId: number)  {}
-
-  getAll(): Todo[]  {
+  getAll(): Todo[] {
     return this.todos;
   }
 
-  update(todo: Todo): void  {}
+  update(todo: Todo): void {}
 
-  delete(todoId: number): void  {}
-
+  delete(todoId: number): void {}
 }
+
 ```
 
-todo.component.ts
-
 ```js
-import { Import, Output } from '@angular/core';
+// todo.component.ts
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from '../todo';
 
 @Component({
   selector: 'app-todo',
+  standalone: true,
+  imports: [],
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
+  styleUrl: './todo.component.scss',
 })
-export class TodoComponent implements OnInit {
-
+export class TodoComponent {
   @Input() todo: any;
 
-  @Output() done = new EventEmitter<any>();
+  @Output() done = new EventEmitter<Todo>();
 
-  colorToBind = "blue";
+  colorToBind = 'blue';
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(todo: Todo) {
-    todo.done = !todo.done;
-    this.done.emit(todo);
+  markAsDone() {
+    this.todo.done = !this.todo.done;
+    this.done.emit(this.todo);
   }
 }
+
 ```
 
-todo.component.html
 
 ```html
+<!-- todo.component.html -->
 <label>
-  <input type="checkbox" [checked]="todo.done" (change)="markTodoAsDone(todo)">{{ todo.name }}
+  <input type="checkbox" [checked]="todo.done" (change)="markAsDone()">{{ todo.name }}
 </label>
 ```
 
@@ -1145,7 +1187,7 @@ export class TodoComponent implements OnInit {
   ngOnInit() {
   }
 
-  markTodoAsDone(todo: Todo) {
+  markAsDone() {
     todo.done = !todo.done;
     this.done.emit(todo);
   }
@@ -1156,7 +1198,7 @@ todo.component.html
 
 ```html
 <label >
-  <input type="checkbox" [checked]="todo.done" (change)="markTodoAsDone(todo)">
+  <input type="checkbox" [checked]="todo.done" (change)=markAsDone()">
   <a [routerLink]="todo.id">{{ todo.name }}</a>
 </label>
 ```

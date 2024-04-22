@@ -1,4 +1,4 @@
-<p appClick appColor color="green">Todo: {{todo | json }}</p>
-
-<button (click)="markAsDone()">Mark as done</button>
-<p appColor [color]="colorToBind">Color binding test</p>
+<label>
+	<input type="checkbox" [checked]="todo.done" (change)="markAsDone()">
+	{{ todo.name }}
+</label>

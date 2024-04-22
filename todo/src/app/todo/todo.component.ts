@@ -1,24 +1,22 @@
-import { JsonPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ColorDirective } from '../color.directive';
-import { ClickDirective } from '../click.directive';
+import { Todo } from '../todo';
 
 @Component({
   selector: 'app-todo',
   standalone: true,
-  imports: [JsonPipe, ColorDirective, ClickDirective],
+  imports: [],
   templateUrl: './todo.component.html',
   styleUrl: './todo.component.scss',
 })
 export class TodoComponent {
   @Input() todo: any;
 
-  @Output() done = new EventEmitter();
+  @Output() done = new EventEmitter<Todo>();
 
   colorToBind = 'blue';
 
   markAsDone() {
-    this.todo.done = true;
+    this.todo.done = !this.todo.done;
     this.done.emit(this.todo);
   }
 }
