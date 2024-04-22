@@ -1,0 +1,12 @@
+<ul>
+  <li *ngFor="let todo of todos$ | async as todos">
+    <a [routerLink]="[todo.id]" routerLinkActive="router-link-active" >{{ todo.name }}</a>
+  </li>
+</ul>
+
+<div *ngIf="todos$ | async as todos">You have {{ todos.length }} todos!</div>
+<app-todo
+  *ngFor="let todo of todos$ | async"
+  [todo]="todo"
+  (done)="catchDoneEvent($event)"
+/>

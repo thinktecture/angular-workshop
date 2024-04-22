@@ -1061,12 +1061,13 @@ Add the following components:
 
 #### Define routes	
 Define/assign the following routes:	
+- ''
 - todos	
 - todos/:id	
 - todos/new	
 - **	
 
-Redirect the default (empty) route to the todo list.	
+Redirect the default route ('') to the todo list.	
 
 #### Router outlet	
 Add a `<router-outlet>` to your AppComponent:	
@@ -1091,10 +1092,10 @@ In TodoListComponent, request all todos and update the template:
 #### Active router links	
 In AppComponent, add routerLinkActive:	
 ```html	
-<a routerLink="/todos" routerLinkActive="my-active">Home</a>	
+<a routerLink="/todos" routerLinkActive="router-link-active">Home</a>	
 ```	
 
-Add a CSS style for a.my-active	
+Add a CSS style for a.router-link-active	
 #### Activated route	
  In TodoEditComponent, listen for changes of the ActivatedRoute and retrieve the record with the given ID from the TodoService and bind it to the view as follows:	
  ```	
@@ -1143,94 +1144,106 @@ const appRoutes: Routes = [
 export class AppModule {}
 ```
 
-app.component.ts
 
 ```js
+// app.component.ts
+import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+
 @Component({
-    selector: 'my-app',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    standalone: true
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [RouterOutlet, RouterLink],
+  providers: [],
 })
-export class AppComponent {}
-```
-
-app.component.html
-
-```html
-<a routerLink="/todos" routerLinkActive="my-active">Home</a> |
-<a routerLink="/todos/new" routerLinkActive="my-active">Create</a>
-<hr>
-<br/>
-<router-outlet></router-outlet>
-```
-
-todo.component.ts
-
-```js
-@Component({
-  selector: 'app-todo',
-  templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
-  standalone: true
-})
-export class TodoComponent implements OnInit {
-
-  @Input() todo: any;
-
-  @Output() done = new EventEmitter<any>();
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markAsDone() {
-    todo.done = !todo.done;
-    this.done.emit(todo);
-  }
+export class AppComponent {
+  constructor() {}
 }
 ```
 
-todo.component.html
+```html
+<!-- app.component.html -->
+<div>
+  <a [routerLink]="['']" routerLinkActive="router-link-active" >Home</a> <br>
+  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active" >Create Todo</a>
+</div>
+<router-outlet></router-outlet>
+
+```
+
+
+```js
+// todo.component.ts
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from '../todo';
+
+@Component({
+  selector: 'app-todo',
+  standalone: true,
+  imports: [],
+  templateUrl: './todo.component.html',
+  styleUrl: './todo.component.scss',
+})
+export class TodoComponent {
+  @Input() todo: any;
+
+  @Output() done = new EventEmitter<Todo>();
+
+  colorToBind = 'blue';
+
+  markAsDone() {
+    this.todo.done = !this.todo.done;
+    this.done.emit(this.todo);
+  }
+}
+
+```
 
 ```html
+<!-- todo.component.html -->
 <label >
   <input type="checkbox" [checked]="todo.done" (change)=markAsDone()">
   <a [routerLink]="todo.id">{{ todo.name }}</a>
 </label>
 ```
 
-todo-edit.component.ts
-
 ```js
+// todo-edit.component.ts
+import { Component, OnInit } from '@angular/core';
+import { TodoService } from '../todo.service';
+import { ActivatedRoute } from '@angular/router';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { map, of, switchMap } from 'rxjs';
+import { Todo } from '../todo';
+
 @Component({
   selector: 'app-todo-edit',
+  standalone: true,
+  imports: [CommonModule, AsyncPipe],
   templateUrl: './todo-edit.component.html',
-  styleUrls: ['./todo-edit.component.css']
+  styleUrl: './todo-edit.component.scss',
 })
 export class TodoEditComponent implements OnInit {
-
-  public todo$: Observable<Todo>;
-
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly todoService: TodoService) { }
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
+  protected todo$ = of<Todo>({ name: '', done: false });
 
   ngOnInit() {
     this.todo$ = this.activatedRoute.params.pipe(
-      pluck('id'),
-      switchMap(id => this.todoService.get(+id))
+      map((params) => params['id'] as string),
+      switchMap((id) => this.todoService.get(id))
     );
   }
 }
 ```
 
-todo-edit.component.html
-
 ```html
-<p>
-{{ todo$ | async | json }}
-</p>
+<!-- todo-edit.component.html -->
+<p> {{ todo$ | async | json }}</p>
 ```
 
 </details>

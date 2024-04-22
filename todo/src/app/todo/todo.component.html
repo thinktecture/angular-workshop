@@ -1,4 +1,4 @@
 <label>
 	<input type="checkbox" [checked]="todo.done" (change)="markAsDone()">
-	{{ todo.name }}
+	<a [routerLink]="todo.id">{{ todo.name }}</a>
 </label>

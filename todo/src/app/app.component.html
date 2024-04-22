@@ -1,15 +1,5 @@
-<button (click)="toggle()">Toggle</button>
-<div *ngIf="show">I'm visible!</div>
-
-<ul>
-  <li *ngFor="let todo of todos$ | async as todos">
-    {{ todo.name }}, {{ todo.done }}
-  </li>
-</ul>
-
-<div *ngIf="todos$ | async as todos">You have {{ todos.length }} todos!</div>
-<app-todo
-  *ngFor="let todo of todos$ | async"
-  [todo]="todo"
-  (done)="catchDoneEvent($event)"
-/>
+<div>
+  <a [routerLink]="['']" routerLinkActive="router-link-active" >Home</a> <br>
+  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active" >Create Todo</a>
+</div>
+<router-outlet></router-outlet>
