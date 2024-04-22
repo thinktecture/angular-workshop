@@ -763,7 +763,6 @@ export class AppComponent {
 ```
 
 ```js
-@Injectable()
 // todo.service.ts
 @Injectable({ providedIn: 'root' })
 export class TodoService {
@@ -843,9 +842,9 @@ delete(todoId: number): Observable<void>`
 ```
 #### Use HttpClient
 
-In your AppModule, add HttpClientModule to the imports array
+In your `ApplicationConfig`, provide the HttpClientModule using the `provideHttpClient()` in the providers list.
 
-Add a constructor to TodoService and request an instance of HttpClient and use HTTP requests instead of returning synchronous data using the following URLs:
+Add a constructor to TodoService and request an instance of `HttpClient` and use HTTP requests instead of returning synchronous data using the following URLs. Remember you need to subscribe to the methods in the service to trigger the rest call.
 
 | Method | Action     | URL                                        |
 | ------ | ---------- | ------------------------------------------ |
@@ -859,31 +858,25 @@ Add a constructor to TodoService and request an instance of HttpClient and use H
 
 <details><summary>Show Solution</summary>
 
-app.module.ts
 
 ```js
-import { HttpClientModule } from '@angular/common/http';
+// app.module.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
-@NgModule({
-    imports: [BrowserModule, FormsModule, HttpClientModule],
-    declarations: [
-        AppComponent,
-        HelloComponent,
-        YellPipe,
-        TodoComponent,
-        ColorDirective,
-        ClickDirective,
-    ],
-    providers: [TodoService],
-    bootstrap: [AppComponent],
-})
-export class AppModule {}
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()],
+};
+
 ```
 
-todo.service.ts
 
 ```js
 @Injectable()
+// todo.service.ts
 export class TodoService {
 
   private actionUrl = "https://tt-todos.azurewebsites.net/todos"
@@ -912,9 +905,9 @@ export class TodoService {
 }
 ```
 
-app.component.ts
 
 ```js
+// app.component.ts
 import { ElementRef } from '@angular/core';
 
 @Component({

@@ -24,7 +24,7 @@ export class AppComponent {
   ) {
     console.log('element ref', elRef);
     console.log('service todos', todoService.getAll());
-    this.todos = todoService.getAll();
+    todoService.getAll().subscribe((todos) => (this.todos = todos));
   }
 
   onDoneClicked($event: any) {

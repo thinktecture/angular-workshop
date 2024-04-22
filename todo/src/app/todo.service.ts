@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Todo } from './todo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  constructor() {}
+  url = 'https://tt-todos.azurewebsites.net/todos';
+
+  constructor(private http: HttpClient) {}
   public todos: Todo[] = [
     { done: false, name: 'Learn Angular', id: 1 },
     { name: 'Wash my clothes', done: false, id: 2 },
@@ -11,15 +15,23 @@ export class TodoService {
     { name: 'Mine bitcoin', done: false, id: 4 },
   ];
 
-  create(todo: Todo) {}
-
-  get(todoId: number) {}
-
-  getAll(): Todo[] {
-    return this.todos;
+  create(todo: Todo): Observable<Todo> {
+    return this.http.post<Todo>(this.url, todo);
   }
 
-  update(todo: Todo): void {}
+  get(todoId: number) {
+    this.http.get(`${this.url}/${todoId}`);
+  }
 
-  delete(todoId: number): void {}
+  getAll(): Observable<Todo[]> {
+    return this.http.get<Todo[]>(this.url);
+  }
+
+  update(todo: Todo): Observable<Todo> {
+    return this.http.put<Todo>(`${this.url}/${todo.id}`, todo);
+  }
+
+  delete(todoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${todoId}`);
+  }
 }
