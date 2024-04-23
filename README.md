@@ -421,11 +421,16 @@ ng generate directive color
 
 The directive takes `color` as an `@Input()` binding. The directive should set the color of the host element (using a `@HostBinding()`).
 
+#### Using the directive from the component
+
+In the component template, declare a `colorToBind` property and give it your favorite color as its value. In the component template, pass the `colorToBind` property into the `[color]` input binding.
+
 #### Create a click directive
 
 Create another directive (named `click`) that adds a click handler to the elements where it’s placed on. Whenever the item is clicked, log a message to the console.
 
 Don't forget to import `ColorDirective` and `ClickDirective` to the component that uses them.
+
 
 </details>
 
