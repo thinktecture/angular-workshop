@@ -1,25 +1,27 @@
 # angular-workshop
 A beginner Angular workshop 
 
-## Start 
-
-```
-ng new todo
-cd todo
-ng serve --open
-```
-
 ## Labs
+### 0. Creating the app
+```sh
+ng new todo
+
+# on the options given, choose: 
+# SCSS, 
+# Server-Side Rendering (SSR): No
+
+cd todo
+
+ng serve --open 
+# your app should open on http://localhost:4200/
+```
 
 ### 1. Bindings
-
-Start: https://stackblitz.com/edit/github-uelwhb
 
 <details><summary>Show Labs</summary>
 	
 #### Interpolation
-In your freshly created project, open the file `src/app/app.component.html` and try the following bindings (one after another). You can completely remove the existing contents of this file.
-
+In your freshly created project, open the file `src/app/app.component.html`. You can completely remove the existing contents of this file. Now try the following bindings (one after another). 
 1. `{{ 'hallo' }}`
 2. `{{ 3 }}`
 3. `{{ 17 + 4 }}`
@@ -46,11 +48,11 @@ Then, `Hello` should show up in the preview pane.
 
 #### Property Binding
 
-1. Declare a new field called `color` on your component instance and initialize it with a CSS color value (e.g., `hotpink`)
-2. Create a new `div` element in the AppComponent’s HTML template (Hint: `<div></div>`)
+1. Declare a new field called `color` on your component instance and initialize it with a CSS color value (e.g., `hotpink`))
+2. Create a new `div` element in the AppComponent’s HTML template and add some text(Hint: `<div>My pink container</div>`
 3. Bind the value of the field to the background color of the `div` element (Hint—add the following attribute assignment to the `div` node: `[style.backgroundColor]="color"`)
 
-The square brackets are not a typo! They might look odd, but it woll work.
+The square brackets are not a typo! They might look odd, but it will work.
 
 #### Event Binding
 
@@ -58,46 +60,52 @@ The square brackets are not a typo! They might look odd, but it woll work.
 2. Create a new `button` element in the AppComponent’s HTML template (Hint: `<button>Click me.</button>`)
 3. Bind the click event of the button to the `onClick` method (Hint—add the following attribute assignment to the `button` node: `(click)="onClick()"`)
 4. Implement a new method `onMouseMove` on the component instance that logs to the console (Hint: `console.log('Hello!')`)
-5. Bind the `mousemove` event of the button to `onMouseMove`
+5. Bind the `mousemove` event of the button to `onMouseMove`. 
 
-Again, the brackets are not a typo. It will work out just fine.
+Again, the brackets are not a typo. It will work just fine.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-https://stackblitz.com/edit/github-uelwhb-uhxbn5
+
+
+#### app.component.ts
 
 ```js
-export class AppComponent  {
-  public value = "Hello";
-  public color = "hotpink";
+import { Component } from '@angular/core';
 
-  public onClick(): void {
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+})
+export class AppComponent {
+  title = 'todo';
+  public value = 'Hello';
+  color = 'hotpink';
+
+  public onClick() {
     alert('Hello!');
   }
 
-  public onMouseMove(): void {
+  public onMouseMove() {
     console.log('Hello!');
   }
 }
 ```
-
+#### app.component.html
 ```html
-{{ 'hallo' }} <br/>
-{{ 3 }} <br/>
-{{ 17 + 4 }} <br/>
-
-<hr/>
+{{ "hallo" }}
+{{ 3 }}
+{{ 17 + 4 }}
 
 <p>{{ value }}</p>
 
-<hr/>
+<div [style.backgroundColor]="color">My pink container</div>
 
-<div [style.backgroundColor]="color">Test</div>
-
-
-<button (click)="onClick()" (mousemove)="onMouseMove()">Click me.</button>
+<button (mousemove)="onMouseMove()" (click)="onClick()">Click me.</button>
 ```
 
 </details>
@@ -118,9 +126,6 @@ MouseEvent documentation: https://developer.mozilla.org/de/docs/Web/API/MouseEve
 </details>
 
 <details><summary>Show Solution</summary>
-
-	
-https://stackblitz.com/edit/github-uelwhb-ery5wz
 
 ```js
 export class AppComponent  {
@@ -185,42 +190,60 @@ Implement the yell pipe as follows:
 <details><summary>Show Solution</summary>
 
 ```js
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { YellPipe } from './yell.pipe';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, YellPipe],
 })
-export class AppComponent  {
-  public value = "Hello";
+export class AppComponent {
+  public value = 'Hello';
+  public color = 'hotpink';
   public number = 3.14159;
+  public onClick(event: MouseEvent) {
+    console.log(event.clientX);
+  }
+
+  public onMouseMove(event: MouseEvent) {
+    console.log(event.clientX);
+  }
 }
 ```
 
 ```js
+// yell.pipe.ts
+import { Pipe, PipeTransform } from '@angular/core';
+
 @Pipe({
-    name: 'yell',
-    standalone: true
+  name: 'yell',
+  standalone: true,
 })
 export class YellPipe implements PipeTransform {
-    transform(value: string, args: string): string {
-        const suffix = args || '!!!';
-        return `${value}${suffix}`;
-    }
+  transform(value: string, args?: string) {
+    const suffix = args || '!!!';
+    return value + suffix;
+  }
 }
+
 ```
 
+
 ```html
-{{ value | uppercase }}	<br/>
+<!-- app.component.ts -->
+<p>{{ value | uppercase}}</p>
 
-{{ number | percent }}	 <br/>
-{{ number | currency }}	<br/>
-{{ number | number:'0.5' }}	<br/>
+<p>{{ number | percent}}</p>
+<p>{{ number | currency}}</p>
+<p>{{ number | number}}</p>
 
-
-{{ value | yell }}<br/>
-{{ value | yell:'???' }}
+<p>{{ value | yell}}</p>
+<p>{{ value | yell: '???'}}</p>
 ```
 
 </details>
@@ -251,41 +274,45 @@ If you like, you can duplicate this HTML element to see the idea of componentiza
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
+
 
 ```js
-@Component({
-    selector: 'app-todo',
-    templateUrl: './todo.component.html',
-    styleUrls: ['./todo.component.css'],
-    standalone: true,
-})
-export class TodoComponent implements OnInit {
-    constructor() {}
+// todo.component.ts
+import { Component } from '@angular/core';
 
-    ngOnInit() {}
+@Component({
+  selector: 'app-todo',
+  standalone: true,
+  imports: [],
+  templateUrl: './todo.component.html',
+  styleUrl: './todo.component.scss',
+})
+export class TodoComponent {
+  
 }
 ```
 
-app.component.html
-
 ```html
+<!-- app.component.html -->
 <app-todo />
 ```
 
-app.component.ts
-
 ```js
+// app.component.ts
+...
+import { TodoComponent } from './todo/todo.component';
+
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
-    imports: [RouterOutlet, CommonModule, TodoComponent]
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, YellPipe, TodoComponent],
 })
 export class AppComponent {
-  title = 'todo';
+...
 }
+
 ```
 
 </details>
@@ -297,81 +324,83 @@ export class AppComponent {
 	
 #### Input
 
-1. Extend your `TodoComponent` with an `@Input` field called `todo`.
+1. Extend your `TodoComponent` with an `@Input()` field called `todo`.
 2. Add a new `myTodo` field to the AppComponent and assign a todo object to it: `{ name: "Wash clothes", done: false, id: 3 }`
 3. Pass the `myTodo` object to the `todo` component from the AppComponent’s template by using an input binding.
-4. In the `TodoComponent`’s template, bind the value of the `todo` field to the UI using the `JSON` pipe.
+4. In the `TodoComponent`’s template, bind the value of the `todo` field to the UI using the interpolation and the `JSON` pipe.
 
 #### Output
 
-1. Extend your `TodoComponent` with an `@Output` field called `done`.
-2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button. When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
+1. Extend your `TodoComponent` with an `@Output()` field called `done`.
+2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button. 
+When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
 3. In the `AppComponent`’s template, bind to the `done` event using an event binding and log the finalized item to the console.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
-
 ```js
-import { Input, Output, EventEmitter, OnInit } from '@angular/core';
+// todo.component.ts
+
+import { JsonPipe } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-todo',
+  standalone: true,
+  imports: [JsonPipe],
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
-  standalone: true
+  styleUrl: './todo.component.scss',
 })
-export class TodoComponent implements OnInit {
-
+export class TodoComponent {
   @Input() todo: any;
+  @Output() done = new EventEmitter();
 
-  @Output() done = new EventEmitter<any>();
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(){
+  markAsDone() {
     this.todo.done = true;
     this.done.emit(this.todo);
   }
-
 }
-```
 
-todo.component.html
+```
 
 ```html
-<p>
-inside todo-component: <br/>
-{{todo | json}}
-</p>
+<!-- todo.component.html -->
 
-<button (click)="markTodoAsDone()">mark as done</button>
+<p>Todo: {{todo | json }}</p>
+
+<button (click)="markAsDone()">Mark as done</button>
 ```
 
-app.component.html
 
 ```html
-<app-todo [todo]="todoObject" (done)="catchDoneEvent($event)"></app-todo>
+<!-- app.component.html -->
+
+<app-todo [todo]="myTodo" (done)="onDoneClicked($event)"/>
 ```
 
-app.component.ts
+
 
 ```js
-@Component({
-  selector: 'my-app',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
-})
-export class AppComponent  {
-  public todoObject = { name: "Wash clothes", done: false, id: 3 }
+// app.component.ts
 
-  catchDoneEvent(todo: any) {
-    console.log(todo)
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+})
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 }
 ```
@@ -386,29 +415,32 @@ export class AppComponent  {
 
 Create a directive:
 
-```
+```sh
 ng generate directive color
 ```
 
-The directive takes `color` as an input binding. The directive should set the color of the host element (using a `@HostBinding`).
+The directive takes `color` as an `@Input()` binding. The directive should set the color of the host element (using a `@HostBinding()`).
 
 #### Create a click directive
 
 Create another directive (named `click`) that adds a click handler to the elements where it’s placed on. Whenever the item is clicked, log a message to the console.
 
+Don't forget to import `ColorDirective` and `ClickDirective` to the component that uses them.
+
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo.component.ts
 
 ```js
+// todo.component.ts
 import { Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.css'],
+  imports: [JsonPipe, ColorDirective, ClickDirective],
   standalone: true
 })
 export class TodoComponent implements OnInit {
@@ -419,51 +451,42 @@ export class TodoComponent implements OnInit {
 
   colorToBind = "blue";
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(){
+  markAsDone(){
     this.todo.done = true;
     this.done.emit(this.todo);
   }
 }
 ```
 
-todo.component.html
 
 ```html
-<p appClick appColor color="green">
-  inside todo-component: <br/>
-  {{todo | json}}
-</p>
-<p>
-  <span appColor [color]="colorToBind">test to apply directive on</span>
-</p>
+<!-- todo.component.html -->
+<p appClick appColor color="green">Todo: {{todo | json }}</p>
 
-<button (click)="markTodoAsDone()">mark as done</button>
+<button (click)="markAsDone()">Mark as done</button>
+<p appColor [color]="colorToBind">Color binding test</p>
+
 ```
 
-color.directive.ts
-
 ```js
+// color.directive.ts
 import { Directive, Input, HostBinding } from '@angular/core';
 
 @Directive({
   selector: '[appColor]',
-  standalone: true
+  standalone: true,
 })
 export class ColorDirective {
-
   @HostBinding('style.color')
-  @Input() color: string;
+  @Input()
+  color: string = '';
 }
+
 ```
 
-click.directive.ts
 
 ```js
+// click.directive.ts
 import { Directive, Input, HostListener } from '@angular/core';
 
 @Directive({
@@ -515,52 +538,65 @@ ng generate service todo
 In your TodoService, add the following methods:
 
 ```ts
-create(todo: Todo): Todo {}
-get(todoId: number): Todo {}
-getAll(): Todo[] {}
-update(todo: Todo): void {}
-delete(todoId: number): void {}
+  create(todo: Todo) {}
+  get(todoId: number) {}
+  getAll(): Todo[] {}
+  update(todo: Todo): void {}
+  delete(todoId: number): void {}
 ```
 
-Add a very basic, synchronous implementation for getAll. Inject your TodoService into the AppComponent (don’t forget to update the imports on top). Log the list of todos to the console.
+Add the following field: 
+```ts
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
+```
+
+Add a very basic, synchronous implementation for getAll returning the todos. Inject your TodoService into the AppComponent (don’t forget to update the imports on top). Log the list of todos to the console in the AppComponent.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
 
 ```js
-import { ElementRef } from '@angular/core';
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+import { TodoService } from './todo.service';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+  providers: [TodoService]
 })
-export class AppComponent  {
-  public todoObject = { name: "Wash clothes", done: false, id: 3 }
-
-  constructor(private readonly elementRef: ElementRef,
-  private readonly todoService: TodoService){
-    console.log("elementRef from constructor", elementRef);
-
-    console.log(todoService.getAll());
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
+    console.log('service todos', todoService.getAll());
   }
 
-  catchDoneEvent(todo: any) {
-    console.log(todo);
-  }
 
-  logElementRef(){
-    console.log("elementRef from console as property", this.elementRef);
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 }
+
 ```
 
-todo.ts
-
 ```js
+// todo.ts
 export interface Todo {
   name: string;
   done: boolean;
@@ -568,13 +604,18 @@ export interface Todo {
 }
 ```
 
-todo.service.ts
 
 ```js
+// todo.service.ts
 @Injectable()
 export class TodoService {
 
-  private todos: Todo[] = [{name: 'Learn Angular', done: true, id: 1}];
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
 
   constructor() { }
 
@@ -610,26 +651,30 @@ In your AppComponent’s template, add the following snippet:
 </div>
 ```
 
-On the component class, introduce a new `show` field and toggle it via a new `toggle()` method (Hint: `this.show = !this.show;`).
+On the component class, introduce a new boolean `show` field and toggle it via a new `toggle()` method (Hint: `this.show = !this.show;`). Your toggle button should work now.
 
 #### *ngFor
 
 In the AppComponent, introduce a new field `todos` and assign the return value of todoService.getAll() to it.
-Bind this field to the view using the `*ngFor` structural directive and an unordered list (`ul`) with one list item (`li`) for each todo:
+Bind this field to the view using the `*ngFor` structural directive and an unordered list (`ul`) with one list item (`li`) for each todo. You can display t he todo name via interpolation.
 
 ```html
+<!-- app.component.html -->
 <ul>
-  <li *ngFor="let todo of todos"></li>
+  <li *ngFor="let todo of todos">{{todo.name}}{{todo.done}}</li>
 </ul>
 ```
+Now you should be able to your todo list in the browser.
 
 Next, iterate over your TodoComponent (app-todo) instead and pass the todo via the todo property binding. Adjust the template of TodoComponent to include:
 - a checkbox (input) to show the “done” state
+- you can bind the markAsDone() method to the (change) Event in the checkbox 
 - a label to show the “name” text
 
 ```html
+<!-- todo.component.html -->
 <label>
-	<input type="checkbox" [checked]="todo.done">
+	<input type="checkbox" [checked]="todo.done" (change)="markAsDone($event)">
 	{{ todo.name }}
 </label>
 ```
@@ -638,9 +683,8 @@ Next, iterate over your TodoComponent (app-todo) instead and pass the todo via t
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
-
 ```js
+// app.component.ts
 @Component({
   selector: 'my-app',
   templateUrl: './app.component.html',
@@ -659,10 +703,6 @@ export class AppComponent  {
     this.todos = todoService.getAll();
   }
 
-  catchDoneEvent(todo: any) {
-    console.log(todo)
-  }
-
   logElementRef(){
     console.log("elementRef from console as property", this.elementRef);
   }
@@ -670,12 +710,18 @@ export class AppComponent  {
   toggle() {
     this.show = !this.show;
   }
+
+  catchDoneEvent(todo: any) {
+    console.log(todo)
+  }
+
 }
 ```
 
-app.component.html
+
 
 ```html
+<!-- app.component.html -->
 <button (click)="toggle()">Toggle</button>	
 <div *ngIf="show">	
 	I am visible!	
@@ -683,78 +729,104 @@ app.component.html
  <ul>	
   <li *ngFor="let todo of todos">{{todo.name}}</li>	
 </ul>	
- <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>	
+ <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)" />
+```
+```js
+
+export class AppComponent {
+  public myTodo = { name: 'Wash clothes', done: false, id: 3 };
+
+  public show: boolean = false;
+  todos: Todo[] = [];
+
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
+    console.log('service todos', todoService.getAll());
+    this.todos = todoService.getAll();
+  }
+
+  onDoneClicked($event: any) {
+    console.log($event);
+  }
+
+  toggle() {
+    this.show = !this.show;
+  }
+
+  catchDoneEvent(todo: Todo) {
+    console.log(todo);
+  }
+}
 ```
 
-todo.service.ts
-
 ```js
-@Injectable()
+// todo.service.ts
+@Injectable({ providedIn: 'root' })
 export class TodoService {
+  constructor() {}
+  public todos: Todo[] = [
+    { done: false, name: 'Learn Angular', id: 1 },
+    { name: 'Wash my clothes', done: false, id: 2 },
+    { name: 'Tidy up the room', done: true, id: 3 },
+    { name: 'Mine bitcoin', done: false, id: 4 },
+  ];
 
-  private todos: Todo[] = [{name: 'Learn Angular', done: true, id: 1}];
+  create(todo: Todo) {}
 
-  constructor() { 
-  }
+  get(todoId: number) {}
 
-  create(todo: Todo) {
-
-  }
-
-  get(todoId: number)  {}
-
-  getAll(): Todo[]  {
+  getAll(): Todo[] {
     return this.todos;
   }
 
-  update(todo: Todo): void  {}
+  update(todo: Todo): void {}
 
-  delete(todoId: number): void  {}
-
+  delete(todoId: number): void {}
 }
+
 ```
 
-todo.component.ts
-
 ```js
-import { Import, Output } from '@angular/core';
+// todo.component.ts
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from '../todo';
 
 @Component({
   selector: 'app-todo',
+  standalone: true,
+  imports: [],
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
+  styleUrl: './todo.component.scss',
 })
-export class TodoComponent implements OnInit {
-
+export class TodoComponent {
   @Input() todo: any;
 
-  @Output() done = new EventEmitter<any>();
+  @Output() done = new EventEmitter<Todo>();
 
-  colorToBind = "blue";
+  colorToBind = 'blue';
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(todo: Todo) {
-    todo.done = !todo.done;
-    this.done.emit(todo);
+  markAsDone() {
+    this.todo.done = !this.todo.done;
+    this.done.emit(this.todo);
   }
 }
+
 ```
 
-todo.component.html
 
 ```html
+<!-- todo.component.html -->
 <label>
-  <input type="checkbox" [checked]="todo.done" (change)="markTodoAsDone(todo)">{{ todo.name }}
+  <input type="checkbox" [checked]="todo.done" (change)="markAsDone()">{{ todo.name }}
 </label>
 ```
 
 </details>
 
-### 9. Observables
+### 9. Observables / Http
 
 <details><summary>Show Labs</summary>
 	
@@ -770,9 +842,9 @@ delete(todoId: number): Observable<void>`
 ```
 #### Use HttpClient
 
-In your AppModule, add HttpClientModule to the imports array
+In your `ApplicationConfig`, provide the HttpClientModule using the `provideHttpClient()` in the providers list.
 
-Add a constructor to TodoService and request an instance of HttpClient and use HTTP requests instead of returning synchronous data using the following URLs:
+Add a constructor to TodoService and request an instance of `HttpClient` and use HTTP requests instead of returning synchronous data using the following URLs. Remember you need to subscribe to the methods in the service to trigger the rest call.
 
 | Method | Action     | URL                                        |
 | ------ | ---------- | ------------------------------------------ |
@@ -786,31 +858,25 @@ Add a constructor to TodoService and request an instance of HttpClient and use H
 
 <details><summary>Show Solution</summary>
 
-app.module.ts
 
 ```js
-import { HttpClientModule } from '@angular/common/http';
+// app.module.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
-@NgModule({
-    imports: [BrowserModule, FormsModule, HttpClientModule],
-    declarations: [
-        AppComponent,
-        HelloComponent,
-        YellPipe,
-        TodoComponent,
-        ColorDirective,
-        ClickDirective,
-    ],
-    providers: [TodoService],
-    bootstrap: [AppComponent],
-})
-export class AppModule {}
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()],
+};
+
 ```
 
-todo.service.ts
 
 ```js
 @Injectable()
+// todo.service.ts
 export class TodoService {
 
   private actionUrl = "https://tt-todos.azurewebsites.net/todos"
@@ -839,9 +905,9 @@ export class TodoService {
 }
 ```
 
-app.component.ts
 
 ```js
+// app.component.ts
 import { ElementRef } from '@angular/core';
 
 @Component({
@@ -883,7 +949,7 @@ export class AppComponent  {
 	
 #### Use Async Pipe
 
-Use the `async` pipe instead of manually subscribing.
+Use the `async` pipe instead of manually subscribing. Use the `ngOnInit()` lifecycle to update the `todos$` field.
 
 **Instead of:**
 ```ts
@@ -907,72 +973,77 @@ this.todos$ = todoService.getAll();
 
 **Instead of:**
 ```ts
-<app-todo *ngFor="let todo of todos" [todo]="todo">
-</app-todo>
+<app-todo *ngFor="let todo of todos" [todo]="todo" />
 ```
 
 **Use:**
 ```ts
-<app-todo *ngFor="let todo of todos$ | async" [todo]="todo">
-</app-todo>
+<app-todo *ngFor="let todo of todos$ | async" [todo]="todo" />
 ```
 </details>
 
 <details><summary>Show Solution</summary>
 
-app.component.ts
-
 ```js
-import { ElementRef } from '@angular/core';
+// app.component.ts
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef } from '@angular/core';
+import { TodoComponent } from './todo/todo.component';
+import { TodoService } from './todo.service';
+import { Todo } from './todo';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ],
-  standalone: true
+  styleUrl: './app.component.scss',
+  imports: [CommonModule, TodoComponent],
+  providers: [TodoService],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  public show = false;
+  protected readonly todos$ = this.todoService.getAll();
 
-  private show = true;
-  todos$: Observable<Todo[]>;
-
-  constructor(private readonly elementRef: ElementRef,
-  private readonly todoService: TodoService){
-    console.log("elementRef from constructor", elementRef);
+  constructor(
+    private readonly elRef: ElementRef,
+    private readonly todoService: TodoService
+  ) {
+    console.log('element ref', elRef);
   }
 
-  ngOnInit() {
-    this.todos$ = this.todoService.getAll();
-  }
-
-  catchDoneEvent(todo: any) {
-    console.log(todo)
-  }
-
-  logElementRef(){
-    console.log("elementRef from console as property", this.elementRef);
+  onDoneClicked($event: any) {
+    console.log($event);
   }
 
   toggle() {
     this.show = !this.show;
   }
+
+  catchDoneEvent(todo: Todo) {
+    console.log(todo);
+  }
 }
 ```
 
-app.component.html
 
 ```html
-<div *ngIf="todos$ | async as todos">
-	You have {{ todos.length }} todos!
-</div>
+<!-- app.component.html -->
+<button (click)="toggle()">Toggle</button>
+<div *ngIf="show">I'm visible!</div>
 
 <ul>
-	<li *ngFor="let todo of todos$ | async">
-		{{ todo.name }}
-	</li>
+  <li *ngFor="let todo of todos$ | async as todos">
+    {{ todo.name }}, {{ todo.done }}
+  </li>
 </ul>
 
-<app-todo *ngFor="let todo of todos$ | async" [todo]="todo" (done)="catchDoneEvent($event)"></app-todo>
+<div *ngIf="todos$ | async as todos">You have {{ todos.length }} todos!</div>
+<app-todo
+  *ngFor="let todo of todos$ | async"
+  [todo]="todo"
+  (done)="catchDoneEvent($event)"
+/>
 ```
 
 </details>
@@ -990,12 +1061,13 @@ Add the following components:
 
 #### Define routes	
 Define/assign the following routes:	
+- ''
 - todos	
 - todos/:id	
 - todos/new	
 - **	
 
-Redirect the default (empty) route to the todo list.	
+Redirect the default route ('') to the todo list.	
 
 #### Router outlet	
 Add a `<router-outlet>` to your AppComponent:	
@@ -1020,10 +1092,10 @@ In TodoListComponent, request all todos and update the template:
 #### Active router links	
 In AppComponent, add routerLinkActive:	
 ```html	
-<a routerLink="/todos" routerLinkActive="my-active">Home</a>	
+<a routerLink="/todos" routerLinkActive="router-link-active">Home</a>	
 ```	
 
-Add a CSS style for a.my-active	
+Add a CSS style for a.router-link-active	
 #### Activated route	
  In TodoEditComponent, listen for changes of the ActivatedRoute and retrieve the record with the given ID from the TodoService and bind it to the view as follows:	
  ```	
@@ -1034,132 +1106,141 @@ Add a CSS style for a.my-active
 
 <details><summary>Show Solution</summary>
 
-app.module.ts
 
 ```js
-import { RouterModule, Routes } from '@angular/router';
+// app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withHashLocation,
+} from '@angular/router';
 
-const appRoutes: Routes = [
-    { path: '', redirectTo: 'todos', pathMatch: 'full' },
-    { path: 'todos', component: TodoListComponent },
-    { path: 'todos/new', component: TodoCreateComponent },
-    { path: 'todos/:id', component: TodoEditComponent },
-    { path: '**', component: NotFoundComponent },
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()],
+};
+
+```
+```js
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { TodoCreateComponent } from './todo-create/todo-create.component';
+import { TodoEditComponent } from './todo-edit/todo-edit.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { TodoListComponent } from './todo-list/todo-list.component';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'todos', pathMatch: 'full' },
+  { component: TodoListComponent, path: 'todos' },
+  { component: TodoCreateComponent, path: 'todos/new' },
+  { component: TodoEditComponent, path: 'todos/:id' },
+  { component: NotFoundComponent, path: '**' },
 ];
 
-@NgModule({
-    imports: [
-        BrowserModule,
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot(appRoutes, { useHash: false }),
-    ],
-    declarations: [
-        AppComponent,
-        HelloComponent,
-        YellPipe,
-        TodoComponent,
-        TodoEditComponent,
-        TodoListComponent,
-        TodoCreateComponent,
-        NotFoundComponent,
-        ColorDirective,
-        ClickDirective,
-    ],
-    providers: [TodoService],
-    bootstrap: [AppComponent],
-})
-export class AppModule {}
 ```
-
-app.component.ts
 
 ```js
+// app.component.ts
+import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+
 @Component({
-    selector: 'my-app',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    standalone: true
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [RouterOutlet, RouterLink],
+  providers: [],
 })
-export class AppComponent {}
-```
-
-app.component.html
-
-```html
-<a routerLink="/todos" routerLinkActive="my-active">Home</a> |
-<a routerLink="/todos/new" routerLinkActive="my-active">Create</a>
-<hr>
-<br/>
-<router-outlet></router-outlet>
-```
-
-todo.component.ts
-
-```js
-@Component({
-  selector: 'app-todo',
-  templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css']
-  standalone: true
-})
-export class TodoComponent implements OnInit {
-
-  @Input() todo: any;
-
-  @Output() done = new EventEmitter<any>();
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  markTodoAsDone(todo: Todo) {
-    todo.done = !todo.done;
-    this.done.emit(todo);
-  }
+export class AppComponent {
+  constructor() {}
 }
 ```
 
-todo.component.html
+```html
+<!-- app.component.html -->
+<div>
+  <a [routerLink]="['']" routerLinkActive="router-link-active" >Home</a> <br>
+  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active" >Create Todo</a>
+</div>
+<router-outlet></router-outlet>
+
+```
+
+
+```js
+// todo.component.ts
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from '../todo';
+
+@Component({
+  selector: 'app-todo',
+  standalone: true,
+  imports: [],
+  templateUrl: './todo.component.html',
+  styleUrl: './todo.component.scss',
+})
+export class TodoComponent {
+  @Input() todo: any;
+
+  @Output() done = new EventEmitter<Todo>();
+
+  colorToBind = 'blue';
+
+  markAsDone() {
+    this.todo.done = !this.todo.done;
+    this.done.emit(this.todo);
+  }
+}
+
+```
 
 ```html
+<!-- todo.component.html -->
 <label >
-  <input type="checkbox" [checked]="todo.done" (change)="markTodoAsDone(todo)">
+  <input type="checkbox" [checked]="todo.done" (change)=markAsDone()">
   <a [routerLink]="todo.id">{{ todo.name }}</a>
 </label>
 ```
 
-todo-edit.component.ts
-
 ```js
+// todo-edit.component.ts
+import { Component, OnInit } from '@angular/core';
+import { TodoService } from '../todo.service';
+import { ActivatedRoute } from '@angular/router';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { map, of, switchMap } from 'rxjs';
+import { Todo } from '../todo';
+
 @Component({
   selector: 'app-todo-edit',
+  standalone: true,
+  imports: [CommonModule, AsyncPipe],
   templateUrl: './todo-edit.component.html',
-  styleUrls: ['./todo-edit.component.css']
+  styleUrl: './todo-edit.component.scss',
 })
 export class TodoEditComponent implements OnInit {
-
-  public todo$: Observable<Todo>;
-
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly todoService: TodoService) { }
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
+  protected todo$ = of<Todo>({ name: '', done: false });
 
   ngOnInit() {
     this.todo$ = this.activatedRoute.params.pipe(
-      pluck('id'),
-      switchMap(id => this.todoService.get(+id))
+      map((params) => params['id'] as string),
+      switchMap((id) => this.todoService.get(id))
     );
   }
 }
 ```
 
-todo-edit.component.html
-
 ```html
-<p>
-{{ todo$ | async | json }}
-</p>
+<!-- todo-edit.component.html -->
+<p> {{ todo$ | async | json }}</p>
 ```
 
 </details>
@@ -1169,70 +1250,168 @@ todo-edit.component.html
 <details><summary>Show Labs</summary>
 	
 #### Add a form	
- In TodoEditComponent, update the template to contain the following form. It should have to fields: A text field for editing the name and a checkbox for setting the done state. Implement onSubmit and send the updated todo to the server.	
+ In TodoEditComponent, update the template to contain the following form. It should have two fields: A text field for editing the name and a checkbox for setting the done state. Implement onSubmit and send the updated todo to the server.
 
-```html	
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)">	
-	<!-- … -->	
-	<button>Submit!</button>	
-</form>	
-```	
+```html
+<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)">
+  <!-- … -->
+  <button>Submit!</button>
+</form>
+```
 
-#### Validation	
- Now, add a required and minlength (5 characters) validation to the name field. Update the submit button to be disabled when the form is invalid:	
- ```html	
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">	
-	<!-- … -->	
-	<button [disabled]="form.invalid">Submit!</button>	
-</form>	
-```	
+#### Validation
+
+Now, add a required and minlength (5 characters) validation to the name field. Update the submit button to be disabled when the form is invalid:
+
+```html
+<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">
+  <!-- … -->
+  <button [disabled]="form.invalid">Submit!</button>
+</form>
+```
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo-edit.component.html
 
 ```html
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">
-  <input type="checkbox" [(ngModel)]="todo.done" name="done">
-  <input type="text" [(ngModel)]="todo.name" name="name" required minlength="5">
-  <button [disabled]="form.invalid">Submit!</button>
+<!-- todo-edit.component.html -->
+<form *ngIf="todo$ | async as todo" #form="ngForm" (ngSubmit)="onSubmit(todo)">
+  <input type="checkbox" [(ngModel)]="todo.done" name="done" />
+  <input type="name" [(ngModel)]="todo.name" name="name" minlength="3" required="true" />
+  <button type="submit" [disabled]="form.invalid">Submit!</button>
 </form>
 ```
 
-todo-edit.component.ts
-
 ```js
+// todo-edit.component.ts
+import { Component, OnInit } from '@angular/core';
+import { TodoService } from '../todo.service';
 import { ActivatedRoute } from '@angular/router';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { map, of, switchMap } from 'rxjs';
+import { Todo } from '../todo';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-todo-edit',
+  standalone: true,
+  imports: [CommonModule, AsyncPipe, FormsModule],
   templateUrl: './todo-edit.component.html',
-  styleUrls: ['./todo-edit.component.css'],
-  standalone: true
+  styleUrl: './todo-edit.component.scss',
 })
 export class TodoEditComponent implements OnInit {
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
 
-  public todo$: Observable<Todo>;
-
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly todoService: TodoService) { }
+  protected todo$ = of<Todo>({ name: '', done: false });
 
   ngOnInit() {
     this.todo$ = this.activatedRoute.params.pipe(
-      pluck('id'),
-      switchMap(id => this.todoService.get(+id))
+      map((params) => params['id'] as string),
+      switchMap((id) => this.todoService.get(id))
     );
   }
 
   onSubmit(todo: Todo) {
-    this.todoService.update(todo).subscribe();
+    console.log(todo);
+    this.todoService.update(todo).subscribe((savedTodo) => {
+      console.log('saved!');
+    });
   }
 }
+
 ```
 
 </details>
+
+
+### 13. Reactive Forms
+
+<details><summary>Show Labs</summary>
+
+#### Add a form
+In the class `TodoCreateComponent`, inject the `NonNullableFormBuilder` and the `TodoService`. Then, create a new form group with a form control for setting the `name` and the `done` state of the newly created todo:
+
+```ts
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly todoService = inject(TodoService);
+  protected readonly formGroup = this.fb.group({
+    // formControlName: ['default value']
+  });
+``` 
+
+Then, update the template to contain the following form. It should have to fields: A text field for editing the name and a checkbox for setting the done state. Implement `onSubmit()` and create the new todo item on the server using the TodoService.
+
+```html	
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">
+	<!-- … -->	
+	<input type="text" formControlName="name">
+	<button>Submit!</button>	
+</form>	
+```
+
+#### Validation	
+ Now, add a required and minlength (5 characters) validation to the name field:
+
+```ts
+  name: ['', [Validators.required, Validators.minlength(5)]]
+```
+
+Update the submit button to be disabled when the form is invalid:
+
+```html	
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">	
+	<!-- … -->	
+	<button [disabled]="formGroup.invalid">Submit!</button>	
+</form>	
+```
+
+</details>
+
+<details><summary>Show Solution</summary>
+
+
+
+```html
+<!-- todo-create.component.html -->
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <input type="checkbox" formControlName="done">
+  <input type="text" formControlName="name">
+  <button [disabled]="formGroup.invalid">Submit!</button>
+</form>
+```
+
+
+```ts
+// todo-create.component.ts
+import { Component, inject } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TodoService } from '../todo.service';
+
+@Component({
+  selector: 'app-todo-create',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './todo-create.component.html',
+  styleUrls: ['./todo-create.component.css'],
+})
+export class TodoCreateComponent {
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly todoService = inject(TodoService);
+  protected readonly formGroup = this.fb.group({
+    done: [false],
+    name: ['', [Validators.required, Validators.minLength(5)]],
+  });
+
+  onSubmit() {
+    this.todoService.create(this.formGroup.getRawValue()).subscribe();
+  }
+}
+```
 
 ## Acknowledgements
 
