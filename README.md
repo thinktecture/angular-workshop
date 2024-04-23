@@ -1250,71 +1250,83 @@ export class TodoEditComponent implements OnInit {
 <details><summary>Show Labs</summary>
 	
 #### Add a form	
- In TodoEditComponent, update the template to contain the following form. It should have to fields: A text field for editing the name and a checkbox for setting the done state. Implement onSubmit and send the updated todo to the server.	
+ In TodoEditComponent, update the template to contain the following form. It should have two fields: A text field for editing the name and a checkbox for setting the done state. Implement onSubmit and send the updated todo to the server.
 
-```html	
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)">	
-	<!-- … -->	
-	<button>Submit!</button>	
-</form>	
-```	
+```html
+<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)">
+  <!-- … -->
+  <button>Submit!</button>
+</form>
+```
 
-#### Validation	
- Now, add a required and minlength (5 characters) validation to the name field. Update the submit button to be disabled when the form is invalid:	
- ```html	
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">	
-	<!-- … -->	
-	<button [disabled]="form.invalid">Submit!</button>	
-</form>	
-```	
+#### Validation
+
+Now, add a required and minlength (5 characters) validation to the name field. Update the submit button to be disabled when the form is invalid:
+
+```html
+<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">
+  <!-- … -->
+  <button [disabled]="form.invalid">Submit!</button>
+</form>
+```
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-todo-edit.component.html
 
 ```html
-<form *ngIf="todo$ | async as todo" (ngSubmit)="onSubmit(todo)" #form="ngForm">
-  <input type="checkbox" [(ngModel)]="todo.done" name="done">
-  <input type="text" [(ngModel)]="todo.name" name="name" required minlength="5">
-  <button [disabled]="form.invalid">Submit!</button>
+<!-- todo-edit.component.html -->
+<form *ngIf="todo$ | async as todo" #form="ngForm" (ngSubmit)="onSubmit(todo)">
+  <input type="checkbox" [(ngModel)]="todo.done" name="done" />
+  <input type="name" [(ngModel)]="todo.name" name="name" minlength="3" required="true" />
+  <button type="submit" [disabled]="form.invalid">Submit!</button>
 </form>
 ```
 
-todo-edit.component.ts
-
 ```js
+// todo-edit.component.ts
+import { Component, OnInit } from '@angular/core';
+import { TodoService } from '../todo.service';
 import { ActivatedRoute } from '@angular/router';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { map, of, switchMap } from 'rxjs';
+import { Todo } from '../todo';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-todo-edit',
+  standalone: true,
+  imports: [CommonModule, AsyncPipe, FormsModule],
   templateUrl: './todo-edit.component.html',
-  styleUrls: ['./todo-edit.component.css'],
-  standalone: true
+  styleUrl: './todo-edit.component.scss',
 })
 export class TodoEditComponent implements OnInit {
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
 
-  public todo$: Observable<Todo>;
-
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private readonly todoService: TodoService) { }
+  protected todo$ = of<Todo>({ name: '', done: false });
 
   ngOnInit() {
     this.todo$ = this.activatedRoute.params.pipe(
-      pluck('id'),
-      switchMap(id => this.todoService.get(+id))
+      map((params) => params['id'] as string),
+      switchMap((id) => this.todoService.get(id))
     );
   }
 
   onSubmit(todo: Todo) {
-    this.todoService.update(todo).subscribe();
+    console.log(todo);
+    this.todoService.update(todo).subscribe((savedTodo) => {
+      console.log('saved!');
+    });
   }
 }
+
 ```
 
 </details>
-
 
 
 ### 13. Reactive Forms
