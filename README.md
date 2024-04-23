@@ -1106,44 +1106,41 @@ Add a CSS style for a.router-link-active
 
 <details><summary>Show Solution</summary>
 
-app.module.ts
 
 ```js
-import { RouterModule, Routes } from '@angular/router';
+// app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withHashLocation,
+} from '@angular/router';
 
-const appRoutes: Routes = [
-    { path: '', redirectTo: 'todos', pathMatch: 'full' },
-    { path: 'todos', component: TodoListComponent },
-    { path: 'todos/new', component: TodoCreateComponent },
-    { path: 'todos/:id', component: TodoEditComponent },
-    { path: '**', component: NotFoundComponent },
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()],
+};
+
+```
+```js
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { TodoCreateComponent } from './todo-create/todo-create.component';
+import { TodoEditComponent } from './todo-edit/todo-edit.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { TodoListComponent } from './todo-list/todo-list.component';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'todos', pathMatch: 'full' },
+  { component: TodoListComponent, path: 'todos' },
+  { component: TodoCreateComponent, path: 'todos/new' },
+  { component: TodoEditComponent, path: 'todos/:id' },
+  { component: NotFoundComponent, path: '**' },
 ];
 
-@NgModule({
-    imports: [
-        BrowserModule,
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot(appRoutes, { useHash: false }),
-    ],
-    declarations: [
-        AppComponent,
-        HelloComponent,
-        YellPipe,
-        TodoComponent,
-        TodoEditComponent,
-        TodoListComponent,
-        TodoCreateComponent,
-        NotFoundComponent,
-        ColorDirective,
-        ClickDirective,
-    ],
-    providers: [TodoService],
-    bootstrap: [AppComponent],
-})
-export class AppModule {}
 ```
-
 
 ```js
 // app.component.ts
