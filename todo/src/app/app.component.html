@@ -1,5 +1,5 @@
 <div>
-  <a [routerLink]="['']" routerLinkActive="router-link-active" >Home</a> <br>
+  <a [routerLink]="['todos']" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{exact: true}">Home</a> <br>
   <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active" >Create Todo</a>
 </div>
 <router-outlet></router-outlet>
