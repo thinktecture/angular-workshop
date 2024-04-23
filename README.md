@@ -1,18 +1,21 @@
 # angular-workshop
-A beginner Angular workshop 
+
+A beginner Angular workshop
 
 ## Labs
+
 ### 0. Creating the app
+
 ```sh
 ng new todo
 
-# on the options given, choose: 
-# SCSS, 
+# on the options given, choose:
+# SCSS,
 # Server-Side Rendering (SSR): No
 
 cd todo
 
-ng serve --open 
+ng serve --open
 # your app should open on http://localhost:4200/
 ```
 
@@ -26,9 +29,10 @@ In your freshly created project, open the file `src/app/app.component.html`. You
 2. `{{ 3 }}`
 3. `{{ 17 + 4 }}`
 
-Which values do you see in the preview pane? 
+Which values do you see in the preview pane?
 
 #### Interpolation II
+
 Now, open the file `src/app/app.component.ts` and introduce a new field called `value` within the `AppComponent` class:
 
 ```ts
@@ -60,7 +64,7 @@ The square brackets are not a typo! They might look odd, but it will work.
 2. Create a new `button` element in the AppComponent’s HTML template (Hint: `<button>Click me.</button>`)
 3. Bind the click event of the button to the `onClick` method (Hint—add the following attribute assignment to the `button` node: `(click)="onClick()"`)
 4. Implement a new method `onMouseMove` on the component instance that logs to the console (Hint: `console.log('Hello!')`)
-5. Bind the `mousemove` event of the button to `onMouseMove`. 
+5. Bind the `mousemove` event of the button to `onMouseMove`.
 
 Again, the brackets are not a typo. It will work just fine.
 
@@ -68,11 +72,8 @@ Again, the brackets are not a typo. It will work just fine.
 
 <details><summary>Show Solution</summary>
 
-
-
-#### app.component.ts
-
 ```js
+// app.component.ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -95,17 +96,24 @@ export class AppComponent {
   }
 }
 ```
-#### app.component.html
+
 ```html
-{{ "hallo" }}
-{{ 3 }}
-{{ 17 + 4 }}
+<!-- app.component.html -->
+{{ "hallo" }} {{ 3 }} {{ 17 + 4 }}
 
 <p>{{ value }}</p>
 
 <div [style.backgroundColor]="color">My pink container</div>
 
 <button (mousemove)="onMouseMove()" (click)="onClick()">Click me.</button>
+```
+
+```scss
+// styles.scss
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 ```
 
 </details>
@@ -118,6 +126,7 @@ export class AppComponent {
 Adjust the implementations of `onClick()` and `onMouseMove()` to print the coordinates of the mouse (instead of printing `Hello!`)
 
 Hints:
+
 - `(click)="onClick($event)"`
 - `public onClick(event: MouseEvent): void {}`
 
@@ -143,7 +152,9 @@ export class AppComponent  {
 ```
 
 ```html
-<button (click)="onClick($event)" (mousemove)="onMouseMove($event)">Click me.</button>
+<button (click)="onClick($event)" (mousemove)="onMouseMove($event)">
+  Click me.
+</button>
 ```
 
 </details>
@@ -163,6 +174,7 @@ Then, adjust it to be printed as UPPERCASE.
 #### Built-in pipes
 
 Add a new numeric field to your AppComponent (e.g., `public number = 3.14159;`). Bind this field to the template using the pipes:
+
 - `percent`
 - `currency`
 - `number` (showing five decimal places)
@@ -170,6 +182,7 @@ Add a new numeric field to your AppComponent (e.g., `public number = 3.14159;`).
 Please use three interpolations (`{{ number | … }} {{ number | … }} {{ number | … }}`).
 
 #### Create a new pipe
+
 Generate a pipe with the name yell:
 
 `ng generate pipe yell`
@@ -177,13 +190,14 @@ Generate a pipe with the name yell:
 Open the generated file `yell.pipe.ts`.
 
 Implement the yell pipe as follows:
+
 - The yell pipe should suffix the bound value with three exclamation marks (e.g., `value + '!!!'` or `` `${value}!!!` ``).
 - The developer can optionally pass an argument to override the suffix (`args` parameter).
 
-| Interpolation                 | Value    |
-| ----------------------------- | -------- |
-| `{{ value \| yell }}`         | Hello!!! |
-| `{{ value \| yell:'???' }}`   | Hello??? |
+| Interpolation               | Value    |
+| --------------------------- | -------- |
+| `{{ value \| yell }}`       | Hello!!! |
+| `{{ value \| yell:'???' }}` | Hello??? |
 
 </details>
 
@@ -191,20 +205,20 @@ Implement the yell pipe as follows:
 
 ```js
 // app.component.ts
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { YellPipe } from './yell.pipe';
+import { CommonModule } from "@angular/common";
+import { Component } from "@angular/core";
+import { YellPipe } from "./yell.pipe";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.scss",
   imports: [CommonModule, YellPipe],
 })
 export class AppComponent {
-  public value = 'Hello';
-  public color = 'hotpink';
+  public value = "Hello";
+  public color = "hotpink";
   public number = 3.14159;
   public onClick(event: MouseEvent) {
     console.log(event.clientX);
@@ -218,21 +232,20 @@ export class AppComponent {
 
 ```js
 // yell.pipe.ts
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'yell',
+  name: "yell",
   standalone: true,
 })
 export class YellPipe implements PipeTransform {
   transform(value: string, args?: string) {
-    const suffix = args || '!!!';
-    return value + suffix;
+    const suffix = args || "!!!";
+    const yelling = value + suffix;
+    return yelling.toUpperCase();
   }
 }
-
 ```
-
 
 ```html
 <!-- app.component.ts -->
@@ -254,7 +267,7 @@ export class YellPipe implements PipeTransform {
 	
 #### Create a new component
 
-Create your first component. The new component should be named `todo`. 
+Create your first component. The new component should be named `todo`.
 
 `ng generate component todo`
 
@@ -267,29 +280,24 @@ Open the AppComponent’s template (i.e., HTML file) and use the new component t
 You then need to import the todo component into the app component. You can do this automatically:
 ![image](https://github.com/thinktecture/angular-workshop/assets/13692904/9b843c0d-d21f-40fd-918c-484e8eb32be8)
 
-
 If you like, you can duplicate this HTML element to see the idea of componentization in action.
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-
-
 ```js
 // todo.component.ts
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-todo',
+  selector: "app-todo",
   standalone: true,
   imports: [],
-  templateUrl: './todo.component.html',
-  styleUrl: './todo.component.scss',
+  templateUrl: "./todo.component.html",
+  styleUrl: "./todo.component.scss",
 })
-export class TodoComponent {
-  
-}
+export class TodoComponent {}
 ```
 
 ```html
@@ -317,7 +325,6 @@ export class AppComponent {
 
 </details>
 
-
 ### 5. Input/Output
 
 <details><summary>Show Labs</summary>
@@ -332,8 +339,8 @@ export class AppComponent {
 #### Output
 
 1. Extend your `TodoComponent` with an `@Output()` field called `done`.
-2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button. 
-When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
+2. Add a `button` to your `TodoComponent` and an event binding for the `click` event of this button.
+   When the button is clicked, set the todo `done` property to `true` and emit the `done` event. Pass the current todo object as the event argument.
 3. In the `AppComponent`’s template, bind to the `done` event using an event binding and log the finalized item to the console.
 
 </details>
@@ -362,7 +369,6 @@ export class TodoComponent {
     this.done.emit(this.todo);
   }
 }
-
 ```
 
 ```html
@@ -373,14 +379,11 @@ export class TodoComponent {
 <button (click)="markAsDone()">Mark as done</button>
 ```
 
-
 ```html
 <!-- app.component.html -->
 
-<app-todo [todo]="myTodo" (done)="onDoneClicked($event)"/>
+<app-todo [todo]="myTodo" (done)="onDoneClicked($event)" />
 ```
-
-
 
 ```js
 // app.component.ts
@@ -431,11 +434,9 @@ Create another directive (named `click`) that adds a click handler to the elemen
 
 Don't forget to import `ColorDirective` and `ClickDirective` to the component that uses them.
 
-
 </details>
 
 <details><summary>Show Solution</summary>
-
 
 ```js
 // todo.component.ts
@@ -463,14 +464,12 @@ export class TodoComponent implements OnInit {
 }
 ```
 
-
 ```html
 <!-- todo.component.html -->
 <p appClick appColor color="green">Todo: {{todo | json }}</p>
 
 <button (click)="markAsDone()">Mark as done</button>
 <p appColor [color]="colorToBind">Color binding test</p>
-
 ```
 
 ```js
@@ -489,7 +488,6 @@ export class ColorDirective {
 
 ```
 
-
 ```js
 // click.directive.ts
 import { Directive, Input, HostListener } from '@angular/core';
@@ -504,7 +502,7 @@ export class ClickDirective {
         console.log('a message');
     }
 
-    constructor() {}
+  constructor() {}
 }
 ```
 
@@ -517,6 +515,7 @@ export class ClickDirective {
 #### Injecting ElementRef
 
 In your AppComponent…
+
 1. `import {ElementRef} from '@angular/core';`
 2. Request an instance of `ElementRef` via constructor injection
 3. Log the instance to the console
@@ -530,6 +529,7 @@ ng generate interface todo
 ```
 
 Create a new model class called `todo` and add the properties:
+
 - `name` (string)
 - `done` (boolean)
 - `id` (number, optional)
@@ -550,7 +550,8 @@ In your TodoService, add the following methods:
   delete(todoId: number): void {}
 ```
 
-Add the following field: 
+Add the following field:
+
 ```ts
   public todos: Todo[] = [
     { done: false, name: 'Learn Angular', id: 1 },
@@ -565,7 +566,6 @@ Add a very basic, synchronous implementation for getAll returning the todos. Inj
 </details>
 
 <details><summary>Show Solution</summary>
-
 
 ```js
 // app.component.ts
@@ -605,10 +605,9 @@ export class AppComponent {
 export interface Todo {
   name: string;
   done: boolean;
-  id?:number;
+  id?: number;
 }
 ```
-
 
 ```js
 // todo.service.ts
@@ -651,14 +650,12 @@ In your AppComponent’s template, add the following snippet:
 
 ```html
 <button (click)="toggle()">Toggle</button>
-<div *ngIf="show">
-  I’m visible!
-</div>
+<div *ngIf="show">I’m visible!</div>
 ```
 
 On the component class, introduce a new boolean `show` field and toggle it via a new `toggle()` method (Hint: `this.show = !this.show;`). Your toggle button should work now.
 
-#### *ngFor
+#### \*ngFor
 
 In the AppComponent, introduce a new field `todos` and assign the return value of todoService.getAll() to it.
 Bind this field to the view using the `*ngFor` structural directive and an unordered list (`ul`) with one list item (`li`) for each todo. You can display t he todo name via interpolation.
@@ -669,18 +666,20 @@ Bind this field to the view using the `*ngFor` structural directive and an unord
   <li *ngFor="let todo of todos">{{todo.name}}{{todo.done}}</li>
 </ul>
 ```
+
 Now you should be able to your todo list in the browser.
 
 Next, iterate over your TodoComponent (app-todo) instead and pass the todo via the todo property binding. Adjust the template of TodoComponent to include:
+
 - a checkbox (input) to show the “done” state
-- you can bind the markAsDone() method to the (change) Event in the checkbox 
+- you can bind the markAsDone() method to the (change) Event in the checkbox
 - a label to show the “name” text
 
 ```html
 <!-- todo.component.html -->
 <label>
-	<input type="checkbox" [checked]="todo.done" (change)="markAsDone($event)">
-	{{ todo.name }}
+  <input type="checkbox" [checked]="todo.done" (change)="markAsDone($event)" />
+  {{ todo.name }}
 </label>
 ```
 
@@ -723,19 +722,20 @@ export class AppComponent  {
 }
 ```
 
-
-
 ```html
 <!-- app.component.html -->
-<button (click)="toggle()">Toggle</button>	
-<div *ngIf="show">	
-	I am visible!	
-</div>	
- <ul>	
-  <li *ngFor="let todo of todos">{{todo.name}}</li>	
-</ul>	
- <app-todo *ngFor="let todo of todos" [todo]="todo" (done)="catchDoneEvent($event)" />
+<button (click)="toggle()">Toggle</button>
+<div *ngIf="show">I am visible!</div>
+<ul>
+  <li *ngFor="let todo of todos">{{todo.name}}</li>
+</ul>
+<app-todo
+  *ngFor="let todo of todos"
+  [todo]="todo"
+  (done)="catchDoneEvent($event)"
+/>
 ```
+
 ```js
 
 export class AppComponent {
@@ -821,11 +821,11 @@ export class TodoComponent {
 
 ```
 
-
 ```html
 <!-- todo.component.html -->
 <label>
-  <input type="checkbox" [checked]="todo.done" (change)="markAsDone()">{{ todo.name }}
+  <input type="checkbox" [checked]="todo.done" (change)="markAsDone()" />
+  {{ todo.name }}
 </label>
 ```
 
@@ -838,6 +838,7 @@ export class TodoComponent {
 #### Adjust service
 
 Adjust your `TodoService` to now return Observables and upgrade the synchronous value in `getAll()` to an Observable (via `of()`).
+
 ```
 create(todo: Todo): Observable<Todo>
 get(todoId: number): Observable<Todo>
@@ -845,6 +846,7 @@ getAll(): Observable<Todo[]>
 update(todo: Todo): Observable<void>
 delete(todoId: number): Observable<void>`
 ```
+
 #### Use HttpClient
 
 In your `ApplicationConfig`, provide the HttpClientModule using the `provideHttpClient()` in the providers list.
@@ -863,7 +865,6 @@ Add a constructor to TodoService and request an instance of `HttpClient` and use
 
 <details><summary>Show Solution</summary>
 
-
 ```js
 // app.module.ts
 import { ApplicationConfig } from '@angular/core';
@@ -875,9 +876,7 @@ import { provideHttpClient } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideHttpClient()],
 };
-
 ```
-
 
 ```js
 @Injectable()
@@ -909,7 +908,6 @@ export class TodoService {
   }
 }
 ```
-
 
 ```js
 // app.component.ts
@@ -957,34 +955,40 @@ export class AppComponent  {
 Use the `async` pipe instead of manually subscribing. Use the `ngOnInit()` lifecycle to update the `todos$` field.
 
 **Instead of:**
+
 ```ts
 public todos: Todo[];
 ```
 
 **Use:**
+
 ```ts
 public todos$: Observable<Todo[]>;
 ```
 
 **Instead of:**
 ```ts
-todoService.getAll().subscribe(todos => this.todos = todos);
+todoService.getAll().subscribe((todos) => (this.todos = todos));
 ```
 
 **Use:**
+
 ```ts
 this.todos$ = todoService.getAll();
 ```
 
 **Instead of:**
+
 ```ts
 <app-todo *ngFor="let todo of todos" [todo]="todo" />
 ```
 
 **Use:**
+
 ```ts
 <app-todo *ngFor="let todo of todos$ | async" [todo]="todo" />
 ```
+
 </details>
 
 <details><summary>Show Solution</summary>
@@ -1031,7 +1035,6 @@ export class AppComponent {
 }
 ```
 
-
 ```html
 <!-- app.component.html -->
 <button (click)="toggle()">Toggle</button>
@@ -1062,55 +1065,71 @@ Add the following components:
 - TodoListComponent	
 - TodoEditComponent	
 - TodoCreateComponent	
-- NotFoundComponent	
+- NotFoundComponent
 
-#### Define routes	
-Define/assign the following routes:	
+#### Define routes
+
+Define/assign the following routes:
+
 - ''
-- todos	
-- todos/:id	
-- todos/new	
-- **	
+- todos
+- todos/:id
+- todos/new
+- \*\*
 
-Redirect the default route ('') to the todo list.	
+Redirect the default route ('') to the todo list.
 
-#### Router outlet	
-Add a `<router-outlet>` to your AppComponent:	
+#### Router outlet
+
+Add a `<router-outlet>` to your AppComponent:
+
 ```html
 <router-outlet></router-outlet>
 ```
-Then try out different routes by typing them into the address bar.	
-- Which parts of the page change?	
-- Which parts stay the same?	
 
-#### Router links	
-In your AppComponent, define two links:	
-- Home (/todos)	
+Then try out different routes by typing them into the address bar.
+
+- Which parts of the page change?
+- Which parts stay the same?
+
+#### Router links
+
+In your AppComponent, define two links:
+
+- Home (/todos)
 - Create (/todos/new)
 
-In TodoListComponent, request all todos and update the template:	
-```html	
-<ul>	
-  <li *ngFor="let todo of todos$ | async"><a [routerLink]="todo.id">{{ todo.name }}</a></li>	
-</ul>	
-```	
-#### Active router links	
-In AppComponent, add routerLinkActive:	
-```html	
-<a routerLink="/todos" routerLinkActive="router-link-active">Home</a>	
-```	
+In TodoListComponent, request all todos and update the template:
 
-Add a CSS style for a.router-link-active	
-#### Activated route	
- In TodoEditComponent, listen for changes of the ActivatedRoute and retrieve the record with the given ID from the TodoService and bind it to the view as follows:	
- ```	
-{{ todo$ | async | json }}	
-```	
+```html
+<ul>
+  <li *ngFor="let todo of todos$ | async">
+    <a [routerLink]="todo.id">{{ todo.name }}</a>
+  </li>
+</ul>
+```
+
+#### Active router links
+
+In AppComponent, add routerLinkActive:
+
+```html
+<a routerLink="/todos" routerLinkActive="router-link-active">Home</a>
+```
+
+Add a CSS style for a.router-link-active
+
+#### Activated route
+
+In TodoEditComponent, listen for changes of the ActivatedRoute and retrieve the record with the given ID from the TodoService and bind it to the view as follows:
+
+```
+{{ todo$ | async | json }}
+```
 
 </details>
 
 <details><summary>Show Solution</summary>
-
 
 ```js
 // app.config.ts
@@ -1127,8 +1146,8 @@ import { provideHttpClient } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideHttpClient()],
 };
-
 ```
+
 ```js
 // app.routes.ts
 import { Routes } from '@angular/router';
@@ -1144,7 +1163,6 @@ export const routes: Routes = [
   { component: TodoEditComponent, path: 'todos/:id' },
   { component: NotFoundComponent, path: '**' },
 ];
-
 ```
 
 ```js
@@ -1167,14 +1185,25 @@ export class AppComponent {
 
 ```html
 <!-- app.component.html -->
-<div>
-  <a [routerLink]="['']" routerLinkActive="router-link-active" >Home</a> <br>
-  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active" >Create Todo</a>
+<div style="header">
+  <a [routerLink]="['']" routerLinkActive="router-link-active">
+    Home
+  </a> 
+  <br />
+  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active">
+    Create Todo
+  </a>
 </div>
 <router-outlet></router-outlet>
-
 ```
 
+```scss
+// app.component.scss
+.header {
+  display: flex;
+  gap: 1rem;
+}
+```
 
 ```js
 // todo.component.ts
@@ -1205,7 +1234,7 @@ export class TodoComponent {
 
 ```html
 <!-- todo.component.html -->
-<label >
+<label>
   <input type="checkbox" [checked]="todo.done" (change)=markAsDone()">
   <a [routerLink]="todo.id">{{ todo.name }}</a>
 </label>
@@ -1245,7 +1274,24 @@ export class TodoEditComponent implements OnInit {
 
 ```html
 <!-- todo-edit.component.html -->
-<p> {{ todo$ | async | json }}</p>
+<p>{{ todo$ | async | json }}</p>
+```
+
+```scss
+// styles.scss
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.router-link-active {
+  color: green;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
 ```
 
 </details>
@@ -1279,12 +1325,17 @@ Now, add a required and minlength (5 characters) validation to the name field. U
 
 <details><summary>Show Solution</summary>
 
-
 ```html
 <!-- todo-edit.component.html -->
 <form *ngIf="todo$ | async as todo" #form="ngForm" (ngSubmit)="onSubmit(todo)">
   <input type="checkbox" [(ngModel)]="todo.done" name="done" />
-  <input type="name" [(ngModel)]="todo.name" name="name" minlength="3" required="true" />
+  <input
+    type="name"
+    [(ngModel)]="todo.name"
+    name="name"
+    minlength="3"
+    required="true"
+  />
   <button type="submit" [disabled]="form.invalid">Submit!</button>
 </form>
 ```
@@ -1333,12 +1384,12 @@ export class TodoEditComponent implements OnInit {
 
 </details>
 
-
 ### 13. Reactive Forms
 
 <details><summary>Show Labs</summary>
 
 #### Add a form
+
 In the class `TodoCreateComponent`, inject the `NonNullableFormBuilder` and the `TodoService`. Then, create a new form group with a form control for setting the `name` and the `done` state of the newly created todo:
 
 ```ts
@@ -1347,20 +1398,21 @@ In the class `TodoCreateComponent`, inject the `NonNullableFormBuilder` and the 
   protected readonly formGroup = this.fb.group({
     // formControlName: ['default value']
   });
-``` 
+```
 
 Then, update the template to contain the following form. It should have to fields: A text field for editing the name and a checkbox for setting the done state. Implement `onSubmit()` and create the new todo item on the server using the TodoService.
 
-```html	
+```html
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">
-	<!-- … -->	
-	<input type="text" formControlName="name">
-	<button>Submit!</button>	
-</form>	
+  <!-- … -->
+  <input type="text" formControlName="name" />
+  <button>Submit!</button>
+</form>
 ```
 
-#### Validation	
- Now, add a required and minlength (5 characters) validation to the name field:
+#### Validation
+
+Now, add a required and minlength (5 characters) validation to the name field:
 
 ```ts
   name: ['', [Validators.required, Validators.minlength(5)]]
@@ -1368,28 +1420,25 @@ Then, update the template to contain the following form. It should have to field
 
 Update the submit button to be disabled when the form is invalid:
 
-```html	
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">	
-	<!-- … -->	
-	<button [disabled]="formGroup.invalid">Submit!</button>	
-</form>	
+```html
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(todo)">
+  <!-- … -->
+  <button [disabled]="formGroup.invalid">Submit!</button>
+</form>
 ```
 
 </details>
 
 <details><summary>Show Solution</summary>
 
-
-
 ```html
 <!-- todo-create.component.html -->
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <input type="checkbox" formControlName="done">
-  <input type="text" formControlName="name">
+  <input type="checkbox" formControlName="done" />
+  <input type="text" formControlName="name" />
   <button [disabled]="formGroup.invalid">Submit!</button>
 </form>
 ```
-
 
 ```ts
 // todo-create.component.ts
