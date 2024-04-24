@@ -24,3 +24,5 @@
 {{ number | percent }}
 {{ number | currency }}
 {{ number | number:'0.5' }}
+
+<app-todo (doneEvent)="catchDone($event)" [todo]="myTodo" (todoClicked)="catchEvent($event)" [text]="todoText"></app-todo>

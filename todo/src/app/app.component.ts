@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { YellPipe } from './yell.pipe';
+import { TodoComponent } from './todo/todo.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, YellPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  imports: [RouterOutlet, CommonModule, YellPipe, TodoComponent],
 })
 export class AppComponent {
   title = 'todo';
@@ -19,6 +20,9 @@ export class AppComponent {
   number = 3.14159;
 
   myColor = 'green';
+  todoText = 'Angular lernen';
+
+  myTodo = { name: 'Wash clothes', done: false, id: 3 };
 
   afterClicked(event: MouseEvent) {
     console.log(event.clientX);
@@ -27,5 +31,13 @@ export class AppComponent {
 
   movedMyMouse() {
     console.log('Hallo!');
+  }
+
+  catchEvent(appEvent: MouseEvent) {
+    console.log(appEvent);
+  }
+
+  catchDone(todo: any) {
+    console.log(todo);
   }
 }
