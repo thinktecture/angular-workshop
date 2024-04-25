@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { ColorDirective } from '../color.directive';
 import { ClickDirective } from '../click.directive';
+import { Todo } from '../todo';
 
 @Component({
   selector: 'app-todo',
@@ -19,15 +20,15 @@ import { ClickDirective } from '../click.directive';
 export class TodoComponent {
   @Output() todoClicked = new EventEmitter<MouseEvent>();
   @Input() text = '';
-  @Input() todo: any;
-  @Output() doneEvent = new EventEmitter<any>();
+  @Input({ required: true }) todo!: Todo;
+  @Output() doneEvent = new EventEmitter<Todo>();
 
   colorToBind = 'hotpink';
 
   constructor(private elRef: ElementRef) {
     console.log(elRef);
   }
-  
+
   clickedMyButton(myEvent: MouseEvent) {
     this.todoClicked.emit(myEvent);
   }

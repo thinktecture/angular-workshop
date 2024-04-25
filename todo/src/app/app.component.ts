@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { YellPipe } from './yell.pipe';
 import { TodoComponent } from './todo/todo.component';
 import { TodoService } from './todo.service';
+import { Todo } from './todo';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { TodoService } from './todo.service';
   imports: [RouterOutlet, CommonModule, YellPipe, TodoComponent],
 })
 export class AppComponent {
+  show = false;
   title = 'todo';
   computedField = false;
   computedNumber = 300;
@@ -21,11 +23,12 @@ export class AppComponent {
   myColor = 'green';
   todoText = 'Angular lernen';
   myTodo = { name: 'Wash clothes', done: false, id: 3 };
+  todoList: Todo[] = [];
 
-  constructor(private elRef: ElementRef, private todoService : TodoService) {
+  constructor(private elRef: ElementRef, private todoService: TodoService) {
     console.log(elRef);
     console.log(todoService.getAll());
-
+    this.todoList = todoService.getAll()
   }
 
   afterClicked(event: MouseEvent) {
@@ -41,7 +44,11 @@ export class AppComponent {
     console.log(appEvent);
   }
 
-  catchDone(todo: any) {
+  catchDone(todo: Todo) {
     console.log(todo);
+  }
+
+  toggle() {
+    this.show = !this.show;
   }
 }

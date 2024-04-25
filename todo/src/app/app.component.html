@@ -1,31 +1,7 @@
-<div [class.done]="computedField"></div>
-<div [style.width.px]="computedNumber" [style.backgroundColor]="'red'">
-  Hallo
+<button (click)="toggle()">Toggle</button>
+<div *ngIf="show">I’m visible!</div>
+
+
+<div *ngFor="let todo of todoList">
+  <app-todo [todo]="todo"  ></app-todo>
 </div>
-
-<div>{{ computedField }}</div>
-
-{{ "hallo" }}
-{{ 3 }}
-{{ 17 + 4 }}
-
-<p>
-  {{ value }}
-</p>
-<div [style.backgroundColor]="myColor">My green container</div>
-<button (click)="afterClicked($event)" (mousemove)="movedMyMouse()">
-  Click me
-</button>
-
-{{ value | uppercase }}
-{{ value | lowercase }}
-{{ value | yell:'???' }}
-
-{{ number | percent }}
-{{ number | currency }}
-{{ number | number:'0.5' }}
-
-<app-todo (doneEvent)="catchDone($event)" [todo]="myTodo" (todoClicked)="catchEvent($event)"
-  [text]="todoText"></app-todo>
-<app-todo (doneEvent)="catchDone($event)" [todo]="myTodo" (todoClicked)="catchEvent($event)"
-  [text]="todoText"></app-todo>
