@@ -2,3 +2,12 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.router-link-active {
+  color: green;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}

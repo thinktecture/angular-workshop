@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { YellPipe } from './yell.pipe';
 import { TodoComponent } from './todo/todo.component';
 import { TodoService } from './todo.service';
@@ -12,7 +12,7 @@ import { Todo } from './todo';
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [RouterOutlet, CommonModule, YellPipe, TodoComponent],
+  imports: [CommonModule, YellPipe, TodoComponent, RouterModule],
 })
 export class AppComponent {
   show = false;

@@ -1,10 +1,10 @@
-<button (click)="toggle()">Toggle</button>
-<div *ngIf="show">I’m visible!</div>
-
-
-<div *ngFor="let todo of todoList$ | async">
-  <app-todo [todo]="todo"></app-todo>
+<div class="header">
+  <a [routerLink]="['']" routerLinkActive="router-link-active">
+    Home
+  </a> 
+  <br />
+  <a [routerLink]="['todos', 'new']" routerLinkActive="router-link-active">
+    Create Todo
+  </a>
 </div>
-
-<div *ngIf="todoList$ | async as todos">
-  {{todos.length  }}</div>
+<router-outlet></router-outlet>
