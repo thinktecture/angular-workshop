@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { ColorDirective } from '../color.directive';
 import { ClickDirective } from '../click.directive';
 
@@ -18,12 +24,16 @@ export class TodoComponent {
 
   colorToBind = 'hotpink';
 
+  constructor(private elRef: ElementRef) {
+    console.log(elRef);
+  }
+  
   clickedMyButton(myEvent: MouseEvent) {
     this.todoClicked.emit(myEvent);
   }
 
   markAsDone() {
-   this.todo.done = true;
-   this.doneEvent.emit(this.todo)
+    this.todo.done = true;
+    this.doneEvent.emit(this.todo);
   }
 }
