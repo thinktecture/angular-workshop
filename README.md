@@ -445,7 +445,7 @@ import { Input, Output, EventEmitter, OnInit } from '@angular/core';
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css'],
+  styleUrls: ['./todo.component.scss'],
   imports: [JsonPipe, ColorDirective, ClickDirective],
   standalone: true
 })
@@ -692,7 +692,7 @@ Next, iterate over your TodoComponent (app-todo) instead and pass the todo via t
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ],
+  styleUrls: [ './app.component.scss' ],
   imports:[TodoComponent, CommonModule],
   standalone: true
 })
@@ -1454,7 +1454,7 @@ import { TodoService } from '../todo.service';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './todo-create.component.html',
-  styleUrls: ['./todo-create.component.css'],
+  styleUrls: ['./todo-create.component.scss'],
 })
 export class TodoCreateComponent {
   private readonly fb = inject(NonNullableFormBuilder);
