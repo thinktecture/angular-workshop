@@ -1,1 +1,19 @@
-{{ todo$ | async | json }}
+<form *ngIf="todo$ | async as todo" #myForm="ngForm" (ngSubmit)="onSubmit(todo)">
+  {{todo | json}}
+  <input type="checkbox" name="done" [(ngModel)]="todo.done">
+  <input type="text" name="name" [(ngModel)]="todo.name" required="true" minlength="3">
+  <button type="submit" [disabled]="!myForm.valid">Save Todo</button>
+</form>
+
+{{weightInKg / (bodySizeInMeter * bodySizeInMeter)}}
+
+
+<hr>
+<div [class.error]=""></div>
+
+<form #bmiCalcForm="ngForm">
+  <label for="size"> Size in Meter
+    <input type="number" [(ngModel)]="bodySizeInMeter" name="size"></label>
+  <label for="weight">Weight in Kg
+    <input type="number" [(ngModel)]="weightInKg" name="weight"></label>
+</form>
