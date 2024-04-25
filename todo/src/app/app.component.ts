@@ -28,7 +28,7 @@ export class AppComponent {
   constructor(private elRef: ElementRef, private todoService: TodoService) {
     console.log(elRef);
     console.log(todoService.getAll());
-    this.todoList = todoService.getAll()
+    todoService.getAll().subscribe((todos) => this.todoList = todos);
   }
 
   afterClicked(event: MouseEvent) {

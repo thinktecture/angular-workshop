@@ -1,27 +1,33 @@
 import { Injectable } from '@angular/core';
 import { Todo } from './todo';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-  public todos: Todo[] = [
-    { done: false, name: 'Learn Angular', id: 1 },
-    { name: 'Wash my clothes', done: false, id: 2 },
-    { name: 'Tidy up the room', done: true, id: 3 },
-    { name: 'Mine bitcoin', done: false, id: 4 },
-  ];
-  constructor() {}
+  private actionUrl = "https://tt-todos.azurewebsites.net/todos"
 
-  create(todo: Todo) {}
+  constructor(private httpClient: HttpClient) {}
+
+  create(todo: Todo): Observable<Todo> {
+    return this.httpClient.post<Todo>(this.actionUrl, todo);
+  }
   
-  get(todoId: number) {}
-
-  getAll(): Todo[] {
-    return this.todos;
+  get(todoId: number): Observable<Todo> {
+    return this.httpClient.get<Todo>(`${this.actionUrl}/${todoId}`);
   }
 
-  update(todo: Todo): void {}
+  getAll(): Observable<Todo[]> {
+    return this.httpClient.get<Todo[]>(this.actionUrl);
+  }
 
-  delete(todoId: number): void {}
+  update(todo: Todo): Observable<Todo> {
+    return this.httpClient.put<Todo>(`${this.actionUrl}/${todo.id}`, todo);
+  }
+
+  delete(todoId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.actionUrl}/${todoId}`);
+  }
 }
