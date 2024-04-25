@@ -690,10 +690,11 @@ Next, iterate over your TodoComponent (app-todo) instead and pass the todo via t
 ```js
 // app.component.ts
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
-  imports:[TodoComponent, CommonModule]
+  styleUrls: [ './app.component.css' ],
+  imports:[TodoComponent, CommonModule],
+  standalone: true
 })
 export class AppComponent  {
 
@@ -914,9 +915,11 @@ export class TodoService {
 import { ElementRef } from '@angular/core';
 
 @Component({
-  selector: 'my-app',
+  selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
+  styleUrl: './app.component.scss',
+  imports: [RouterOutlet, CommonModule, YellPipe, TodoComponent],
 })
 export class AppComponent  {
 
