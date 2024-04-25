@@ -1,1 +1,5 @@
-<p>todo-create works!</p>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <input type="text" formControlName="name">
+    <input type="checkbox" formControlName="done">
+    <button [disabled]="formGroup.invalid">Submit!</button>
+</form>
