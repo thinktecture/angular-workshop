@@ -2,6 +2,9 @@
 <div *ngIf="show">I’m visible!</div>
 
 
-<div *ngFor="let todo of todoList">
-  <app-todo [todo]="todo"  ></app-todo>
+<div *ngFor="let todo of todoList$ | async">
+  <app-todo [todo]="todo"></app-todo>
 </div>
+
+<div *ngIf="todoList$ | async as todos">
+  {{todos.length  }}</div>

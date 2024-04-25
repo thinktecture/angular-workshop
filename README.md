@@ -1188,7 +1188,7 @@ export class AppComponent {
 
 ```html
 <!-- app.component.html -->
-<div style="header">
+<div class="header">
   <a [routerLink]="['']" routerLinkActive="router-link-active">
     Home
   </a> 

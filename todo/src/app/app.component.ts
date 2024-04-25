@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -23,12 +24,13 @@ export class AppComponent {
   myColor = 'green';
   todoText = 'Angular lernen';
   myTodo = { name: 'Wash clothes', done: false, id: 3 };
-  todoList: Todo[] = [];
+  todoList$: Observable<Todo[]>;
 
   constructor(private elRef: ElementRef, private todoService: TodoService) {
     console.log(elRef);
     console.log(todoService.getAll());
-    todoService.getAll().subscribe((todos) => this.todoList = todos);
+    // todoService.getAll().subscribe((todos) => this.todoList = todos);
+    this.todoList$ = todoService.getAll()
   }
 
   afterClicked(event: MouseEvent) {
