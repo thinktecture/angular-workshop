@@ -39,7 +39,7 @@ Now, open the file `src/app/app.component.ts` and introduce a new field called `
 
 ```ts
 export class AppComponent {
-    public value = "Hello";
+   public value = "Hello";
 }
 ```
 
@@ -97,7 +97,6 @@ export class AppComponent {
         console.log('Hello!');
     }
 }
-
 ```
 
 _app.component.html_
@@ -143,6 +142,7 @@ MouseEvent documentation: https://developer.mozilla.org/de/docs/Web/API/MouseEve
 
 <details><summary>Show Solution</summary>
 
+_app.component.ts_
 ```ts
 import {Component} from '@angular/core';
 
@@ -165,7 +165,7 @@ export class AppComponent {
     }
 }
 ```
-
+_app.component.html_
 ```angular17html
 {{ "hallo" }}
 {{ 3 }}
@@ -261,7 +261,7 @@ export class YellPipe implements PipeTransform {
 }
 ```
 
-_app.component.ts_
+_app.component.html_
 
 ```angular17html
 <p>{{ value | uppercase }}</p>
@@ -908,50 +908,43 @@ export const appConfig: ApplicationConfig = {
 _todo.service.ts_
 
 ```ts
-@Injectable()
-import
-{
-    Injectable
-}
-from
-'@angular/core';
-import {Todo} from './todo';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Todo } from './todo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TodoService {
-    url = 'https://tt-todos.azurewebsites.net/todos';
+   url = 'https://tt-todos.azurewebsites.net/todos';
 
-    constructor(private http: HttpClient) {
-    }
+   constructor(private http: HttpClient) {}
 
-    public todos: Todo[] = [
-        {done: false, name: 'Learn Angular', id: 1},
-        {name: 'Wash my clothes', done: false, id: 2},
-        {name: 'Tidy up the room', done: true, id: 3},
-        {name: 'Mine bitcoin', done: false, id: 4},
-    ];
+   public todos: Todo[] = [
+      { done: false, name: 'Learn Angular', id: 1 },
+      { name: 'Wash my clothes', done: false, id: 2 },
+      { name: 'Tidy up the room', done: true, id: 3 },
+      { name: 'Mine bitcoin', done: false, id: 4 },
+   ];
 
-    create(todo: Todo): Observable<Todo> {
-        return this.http.post<Todo>(this.url, todo);
-    }
+   create(todo: Todo): Observable<Todo> {
+      return this.http.post<Todo>(this.url, todo);
+   }
 
-    get(todoId: string) {
-        return this.http.get(`${this.url}/${todoId}`);
-    }
+   get(todoId: string): Observable<Todo> {
+      return this.http.get<Todo>(`${this.url}/${todoId}`);
+   }
 
-    getAll(): Observable<Todo[]> {
-        return this.http.get<Todo[]>(this.url);
-    }
+   getAll(): Observable<Todo[]> {
+      return this.http.get<Todo[]>(this.url);
+   }
 
-    update(todo: Todo): Observable<Todo> {
-        return this.http.put<Todo>(`${this.url}/${todo.id}`, todo);
-    }
+   update(todo: Todo): Observable<Todo> {
+      return this.http.put<Todo>(`${this.url}/${todo.id}`, todo);
+   }
 
-    delete(todoId: number): Observable<void> {
-        return this.http.delete<void>(`${this.url}/${todoId}`);
-    }
+   delete(todoId: number): Observable<void> {
+      return this.http.delete<void>(`${this.url}/${todoId}`);
+   }
 }
 ```
 
@@ -1193,20 +1186,6 @@ In TodoEditComponent, listen for changes of the ActivatedRoute and retrieve the 
 
 <details><summary>Show Solution</summary>
 
-_app.config.ts_
-
-```ts
-import {ApplicationConfig} from '@angular/core';
-import {provideRouter} from '@angular/router';
-
-import {routes} from './app.routes';
-import {provideHttpClient} from '@angular/common/http';
-
-export const appConfig: ApplicationConfig = {
-    providers: [provideRouter(routes), provideHttpClient()],
-};
-```
-
 _app.routes.ts_
 
 ```ts
@@ -1271,7 +1250,7 @@ _app.component.scss_
 _todo-list.component.ts_
 
 ```ts
-import {TodoService} from './../todo.service';
+import {TodoService} from '../todo.service';
 import {Component} from '@angular/core';
 import {TodoComponent} from '../todo/todo.component';
 import {Todo} from '../todo';
@@ -1279,21 +1258,21 @@ import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
 
 @Component({
-    selector: 'app-todo-list',
-    standalone: true,
-    templateUrl: './todo-list.component.html',
-    styleUrl: './todo-list.component.scss',
-    imports: [TodoComponent, CommonModule, RouterLink],
+   selector: 'app-todo-list',
+   standalone: true,
+   templateUrl: './todo-list.component.html',
+   styleUrl: './todo-list.component.scss',
+   imports: [TodoComponent, CommonModule, RouterLink],
 })
 export class TodoListComponent {
-    protected readonly todos$ = this.todoService.getAll();
+   protected readonly todos$ = this.todoService.getAll();
 
-    constructor(private todoService: TodoService) {
-    }
+   constructor(private todoService: TodoService) {
+   }
 
-    catchDoneEvent(todo: Todo) {
-        console.log(todo);
-    }
+   catchDoneEvent(todo: Todo) {
+      console.log(todo);
+   }
 }
 ```
 
@@ -1319,31 +1298,30 @@ _todo-list.component.html_
 _todo-edit.component.ts_
 
 ```ts
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {TodoService} from '../todo.service';
 import {ActivatedRoute} from '@angular/router';
 import {AsyncPipe, CommonModule} from '@angular/common';
-import {map, of, switchMap} from 'rxjs';
-import {Todo} from '../todo';
+import {map, switchMap} from 'rxjs';
 
 @Component({
-    selector: 'app-todo-edit',
-    standalone: true,
-    imports: [CommonModule, AsyncPipe],
-    templateUrl: './todo-edit.component.html',
-    styleUrl: './todo-edit.component.scss',
+   selector: 'app-todo-edit',
+   standalone: true,
+   imports: [CommonModule, AsyncPipe],
+   templateUrl: './todo-edit.component.html',
+   styleUrl: './todo-edit.component.scss',
 })
 export class TodoEditComponent {
-    protected todo$ = this.activatedRoute.params.pipe(
-        map((params) => params['id'] as string),
-        switchMap((id) => this.todoService.get(id)),
-    );
+   protected todo$ = this.activatedRoute.params.pipe(
+           map((params) => params['id'] as string),
+           switchMap((id) => this.todoService.get(id)),
+   );
 
-    constructor(
-        private readonly todoService: TodoService,
-        private readonly activatedRoute: ActivatedRoute,
-    ) {
-    }
+   constructor(
+           private readonly todoService: TodoService,
+           private readonly activatedRoute: ActivatedRoute,
+   ) {
+   }
 }
 ```
 
@@ -1438,16 +1416,6 @@ Now, add a required and minlength (5 characters) validation to the name field. U
 
 <details><summary>Show Solution</summary>
 
-_todo-edit.component.html_
-
-```angular17html
-<form #form="ngForm" (ngSubmit)="onSubmit(todo)" *ngIf="todo$ | async as todo">
-   <input [(ngModel)]="todo.done" name="done" type="checkbox"/>
-   <input [(ngModel)]="todo.name" minlength="3" name="name" required="true" type="name" />
-   <button [disabled]="form.disabled" type="submit">Submit!</button>
-</form>
-```
-
 _todo-edit.component.ts_
 ```ts
 import {Component, OnInit} from '@angular/core';
@@ -1486,6 +1454,15 @@ export class TodoEditComponent {
 }
 ```
 
+_todo-edit.component.html_
+
+```angular17html
+<form #form="ngForm" (ngSubmit)="onSubmit(todo)" *ngIf="todo$ | async as todo">
+   <input [(ngModel)]="todo.done" name="done" type="checkbox"/>
+   <input [(ngModel)]="todo.name" minlength="3" name="name" required="true" type="name" />
+   <button [disabled]="form.disabled" type="submit">Submit!</button>
+</form>
+```
 </details>
 
 ### 13. Reactive Forms
@@ -1537,16 +1514,6 @@ Update the submit button to be disabled when the form is invalid:
 
 <details><summary>Show Solution</summary>
 
-_todo-create.component.html_
-
-```angular17html
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-    <input type="text" formControlName="name">
-    <input type="checkbox" formControlName="done">
-    <button [disabled]="formGroup.invalid">Submit!</button>
-</form>
-```
-
 _todo-create.component.ts_
 
 ```ts
@@ -1556,34 +1523,42 @@ import {TodoService} from '../todo.service';
 import {debounceTime} from 'rxjs';
 
 @Component({
-    selector: 'app-todo-create',
-    standalone: true,
-    imports: [ReactiveFormsModule],
-    templateUrl: './todo-create.component.html',
-    styleUrl: './todo-create.component.scss'
+   selector: 'app-todo-create',
+   standalone: true,
+   imports: [ReactiveFormsModule],
+   templateUrl: './todo-create.component.html',
+   styleUrl: './todo-create.component.scss'
 })
 export class TodoCreateComponent {
-    private readonly fb = inject(NonNullableFormBuilder);
-    private readonly todoService = inject(TodoService);
-    protected readonly formGroup = this.fb.group({
-        name: ['test', [Validators.required, Validators.minLength(3)]],
-        done: [false],
-    });
+   private readonly fb = inject(NonNullableFormBuilder);
+   private readonly todoService = inject(TodoService);
+   protected readonly formGroup = this.fb.group({
+      name: ['test', [Validators.required, Validators.minLength(3)]],
+      done: [false],
+   });
 
-    constructor() {
-        this.formGroup.valueChanges
-            .pipe(debounceTime(300))
-            .subscribe(value => console.log(value));
-    }
+   constructor() {
+      this.formGroup.valueChanges
+              .pipe(debounceTime(300))
+              .subscribe(value => console.log(value));
+   }
 
-    onSubmit() {
-        this.todoService
-            .create(this.formGroup.getRawValue())
-            .subscribe();
-    }
+   onSubmit() {
+      this.todoService
+              .create(this.formGroup.getRawValue())
+              .subscribe();
+   }
 }
 ```
+_todo-create.component.html_
 
+```angular17html
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <input type="text" formControlName="name">
+    <input type="checkbox" formControlName="done">
+    <button [disabled]="formGroup.invalid">Submit!</button>
+</form>
+```
 ## Acknowledgements
 
 A prior version of this workshop was held together with [Fabian Gosebrink](https://twitter.com/FabianGosebrink).
